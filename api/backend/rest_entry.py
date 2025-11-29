@@ -7,8 +7,25 @@ from logging.handlers import RotatingFileHandler
 from backend.db_connection import db
 from backend.simple.simple_routes import simple_routes
 from backend.ngos.ngo_routes import ngos
+from backend.portfolios.portfolio_routes import portfolios
+from backend.assets.asset_routes import assets
+from backend.positions.position_routes import positions
 
 def create_app():
+    """
+    Create and configure the Flask application.
+
+    Sets up database connections, loads environment variables from .env file,
+    registers all route blueprints, and configures logging. This is the main
+    factory function for creating the Flask app instance.
+
+    Returns:
+    - Flask: Configured Flask application instance.
+
+    Raises:
+    - EnvironmentError: If required environment variables are missing.
+    - DatabaseError: If database connection initialization fails.
+    """
     app = Flask(__name__)
 
     app.logger.setLevel(logging.DEBUG)
@@ -50,16 +67,30 @@ def create_app():
     app.logger.info("create_app(): registering blueprints with Flask app object.")
     app.register_blueprint(simple_routes)
     app.register_blueprint(ngos, url_prefix="/ngo")
+    app.register_blueprint(portfolios, url_prefix="/portfolio")
+    app.register_blueprint(assets, url_prefix="/asset")
+    app.register_blueprint(positions, url_prefix="/position")
 
     # Don't forget to return the app object
     return app
 
 def setup_logging(app):
     """
-    Configure logging for the Flask application in both files and console (Docker Desktop for this project)
-    
+    Configure logging for the Flask application.
+
+    Sets up both file and console logging handlers. Currently commented out
+    but can be enabled when you need to log to files. The function is ready
+    to use when uncommented.
+
     Args:
-        app: Flask application instance to configure logging for
+    - app (Flask): The Flask application instance to configure logging for.
+
+    Returns:
+    - None
+
+    Note:
+    - This function is currently a placeholder. Uncomment the code inside
+      to enable file and console logging handlers.
     """
     # if not os.path.exists('logs'):
     #     os.mkdir('logs')
