@@ -1,41 +1,154 @@
-import logging
-logger = logging.getLogger(__name__)
+# pages/10_USAID_Worker_Home.py
+# Stratify - ESG & Impact Investing
+# Persona: Impact Analyst / USAID Worker
 
+import sys
 import streamlit as st
+import pandas as pd
+
+sys.path.append("..")
+from stratify_loader import show_stratify_loader  # noqa: E402
+
+st.set_page_config(
+    page_title="ESG & Impact - Stratify",
+    page_icon="🌱",
+    layout="wide",
+)
+
 from modules.nav import SideBarLinks
+from stratify_theme import apply_stratify_theme
 
-st.set_page_config(layout = 'wide')
-
-# Show appropriate sidebar links for the role of the currently logged in user
+apply_stratify_theme()
 SideBarLinks()
 
-st.title(f"Welcome USAID Worker, {st.session_state['first_name']}.")
-st.write('')
-st.write('')
-st.write('### What would you like to do today?')
+# ============================================
+# STYLES
+# ============================================
+st.markdown(
+    """
+<style>
+.esg-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
 
-if st.button('View NGO Directory', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/14_NGO_Directory.py')
+.esg-score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #22c55e;
+    margin: 0.5rem 0;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
 
-if st.button('Add New NGO', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/15_Add_NGO.py')
+# ============================================
+# HEADER
+# ============================================
+st.markdown(
+    """
+    <div style="padding: 1.5rem 0 1rem 0;">
+        <h1 style="font-size: 2.5rem; color: #22c55e; margin-bottom: 0.25rem;">
+            ESG & Impact
+        </h1>
+        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
+            Environmental, Social, and Governance performance tracking
+        </p>
+    </div>
+    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    """,
+    unsafe_allow_html=True,
+)
 
-if st.button('Predict Value Based on Regression Model', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/11_Prediction.py')
+# ============================================
+# ESG OVERVIEW
+# ============================================
+c1, c2, c3 = st.columns(3)
 
-if st.button('View the Simple API Demo', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/12_API_Test.py')
+with c1:
+    st.markdown(
+        """
+        <div class="esg-card">
+            <div style="color:#94a3b8; text-transform:uppercase;">Environmental Score</div>
+            <div class="esg-score">84</div>
+            <div style="color:#22c55e;">Top 10% of Peers</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-if st.button("View Classification Demo",
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/13_Classification.py')
-  
+with c2:
+    st.markdown(
+        """
+        <div class="esg-card">
+            <div style="color:#94a3b8; text-transform:uppercase;">Social Score</div>
+            <div class="esg-score" style="color:#f59e0b;">62</div>
+            <div style="color:#f59e0b;">Average Performance</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with c3:
+    st.markdown(
+        """
+        <div class="esg-card">
+            <div style="color:#94a3b8; text-transform:uppercase;">Governance Score</div>
+            <div class="esg-score" style="color:#3b82f6;">91</div>
+            <div style="color:#3b82f6;">Industry Leader</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# ============================================
+# IMPACT PORTFOLIO
+# ============================================
+st.markdown("### 🌍 Impact Portfolio Holdings")
+
+df = pd.DataFrame({
+    "Organization": ["Green Energy Corp", "Water For All", "EduTech Global", "Sustainable Agri"],
+    "Sector": ["Renewables", "Utilities", "Education", "Agriculture"],
+    "Impact Metric": ["1.2M Tons CO2 Saved", "500K People Served", "2M Students Reached", "10K Farmers Supported"],
+    "ESG Rating": ["AAA", "AA", "A", "AA+"]
+})
+
+st.dataframe(
+    df,
+    use_container_width=True,
+    hide_index=True
+)
+
+# ============================================
+# ACTIONS
+# ============================================
+st.markdown("<br>", unsafe_allow_html=True)
+col_a, col_b = st.columns(2)
+
+with col_a:
+    st.markdown("### 📋 NGO Directory")
+    st.info("Access the global database of verified NGOs and impact funds.")
+    if st.button("Browse Directory"):
+        show_stratify_loader(duration=1, message="Loading Directory...")
+        # In a real app, this would link to pages/14_NGO_Directory.py
+        st.success("Directory Loaded (Demo)")
+
+with col_b:
+    st.markdown("### ➕ Add New Impact Fund")
+    st.info("Submit a new organization for ESG screening and verification.")
+    if st.button("Submit New Fund"):
+        show_stratify_loader(duration=1, message="Opening Form...")
+        # In a real app, this would link to pages/15_Add_NGO.py
+        st.success("Form Opened (Demo)")
+
+# ============================================
+# FOOTER
+# ============================================
+st.markdown("<br><br>", unsafe_allow_html=True)
+if st.button("← Return to Dashboard"):
+    st.switch_page("Home.py")

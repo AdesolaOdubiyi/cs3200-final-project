@@ -2,7 +2,9 @@ import streamlit as st
 import requests
 from streamlit_extras.app_logo import add_logo
 from modules.nav import SideBarLinks
+from stratify_theme import apply_stratify_theme
 
+apply_stratify_theme()
 # Initialize sidebar
 SideBarLinks()
 

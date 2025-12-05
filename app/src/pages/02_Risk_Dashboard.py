@@ -1,0 +1,210 @@
+# pages/02_Risk_Dashboard.py
+# Stratify - Risk Intelligence & Exposure Monitoring
+# Personas: Noah Harrison (Data Analyst), Sarah Martinez (Director)
+
+import sys
+import streamlit as st
+import pandas as pd
+import numpy as np
+
+sys.path.append("..")
+from stratify_loader import show_stratify_loader  # noqa: E402
+
+st.set_page_config(
+    page_title="Risk Dashboard - Stratify",
+    page_icon="🛡️",
+    layout="wide",
+)
+
+from modules.nav import SideBarLinks
+from stratify_theme import apply_stratify_theme
+
+apply_stratify_theme()
+SideBarLinks()
+
+# ============================================
+# STYLES
+# ============================================
+st.markdown(
+    """
+<style>
+.metric-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+.metric-val {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono';
+    margin: 0.5rem 0;
+}
+.metric-lbl {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.risk-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+# ============================================
+# HEADER
+# ============================================
+st.markdown(
+    """
+    <div style="padding: 1.5rem 0 1rem 0;">
+        <h1 style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.25rem;">
+            Risk Intelligence
+        </h1>
+        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
+            Firm-wide exposure monitoring and stress testing
+        </p>
+    </div>
+    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================
+# KEY RISK METRICS
+# ============================================
+c1, c2, c3, c4 = st.columns(4)
+
+with c1:
+    st.markdown(
+        """
+        <div class="metric-box">
+            <div class="metric-lbl">Value at Risk (95%)</div>
+            <div class="metric-val" style="color:#ef4444;">$42.5K</div>
+            <div style="color:#94a3b8; font-size:0.8rem;">Daily VaR</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with c2:
+    st.markdown(
+        """
+        <div class="metric-box">
+            <div class="metric-lbl">Portfolio Beta</div>
+            <div class="metric-val" style="color:#3b82f6;">1.15</div>
+            <div style="color:#94a3b8; font-size:0.8rem;">vs S&P 500</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with c3:
+    st.markdown(
+        """
+        <div class="metric-box">
+            <div class="metric-lbl">Sharpe Ratio</div>
+            <div class="metric-val" style="color:#22c55e;">1.84</div>
+            <div style="color:#94a3b8; font-size:0.8rem;">Risk-Adjusted Return</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with c4:
+    st.markdown(
+        """
+        <div class="metric-box">
+            <div class="metric-lbl">Max Drawdown</div>
+            <div class="metric-val" style="color:#f59e0b;">-12.4%</div>
+            <div style="color:#94a3b8; font-size:0.8rem;">Trailing 12M</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ============================================
+# EXPOSURE ANALYSIS
+# ============================================
+col_left, col_right = st.columns([2, 1])
+
+with col_left:
+    st.markdown('<div class="risk-card">', unsafe_allow_html=True)
+    st.markdown("### 🗺️ Sector Exposure Heatmap")
+    
+    # Mock Heatmap Data
+    sectors = ["Tech", "Finance", "Energy", "Healthcare", "Consumer"]
+    exposure = [45, 30, 15, 5, 5]
+    
+    # Simple bar chart as proxy for heatmap in Streamlit
+    chart_data = pd.DataFrame({"Sector": sectors, "Exposure (%)": exposure})
+    st.bar_chart(chart_data.set_index("Sector"), color="#3b82f6")
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with col_right:
+    st.markdown('<div class="risk-card">', unsafe_allow_html=True)
+    st.markdown("### ⚠️ Concentration Alerts")
+    
+    st.markdown(
+        """
+        <div style="margin-top:1rem;">
+            <div style="padding:0.75rem; background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; margin-bottom:0.5rem; border-radius:4px;">
+                <strong style="color:#ef4444;">High Tech Exposure</strong><br>
+                <span style="font-size:0.85rem; color:#cbd5e1;">Portfolio A exceeds 40% limit (Current: 45%)</span>
+            </div>
+            <div style="padding:0.75rem; background:rgba(245,158,11,0.1); border-left:4px solid #f59e0b; margin-bottom:0.5rem; border-radius:4px;">
+                <strong style="color:#f59e0b;">Correlation Spike</strong><br>
+                <span style="font-size:0.85rem; color:#cbd5e1;">Tech & Crypto correlation > 0.85</span>
+            </div>
+            <div style="padding:0.75rem; background:rgba(59,130,246,0.1); border-left:4px solid #3b82f6; border-radius:4px;">
+                <strong style="color:#3b82f6;">Liquidity Watch</strong><br>
+                <span style="font-size:0.85rem; color:#cbd5e1;">Small cap positions < 2 days volume</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ============================================
+# STRESS TESTING
+# ============================================
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("### 🌪️ Scenario Stress Testing")
+
+with st.expander("Run Stress Test Scenario", expanded=True):
+    sc_col1, sc_col2 = st.columns([3, 1])
+    with sc_col1:
+        scenario = st.selectbox(
+            "Select Market Scenario",
+            ["2008 Financial Crisis (-50%)", "Tech Bubble Burst (-30% Tech)", "Interest Rate Hike (+200bps)", "Oil Price Shock (+50%)"]
+        )
+    with sc_col2:
+        st.write("")
+        st.write("")
+        if st.button("Simulate Impact", use_container_width=True):
+            show_stratify_loader(duration=2, message="Running Monte Carlo Simulation...", style="cascade")
+            st.error(f"Estimated Portfolio Impact: -18.4% ($175,800 Loss)")
+
+# ============================================
+# FOOTER
+# ============================================
+st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("---")
+f_col1, f_col2 = st.columns(2)
+with f_col1:
+    if st.button("← Back to Analyst Home"):
+        st.switch_page("pages/10_Analyst_Home.py")
+with f_col2:
+    if st.button("Go to Director Dashboard →"):
+        st.switch_page("pages/30_Director_Home.py")

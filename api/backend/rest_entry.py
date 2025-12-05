@@ -10,6 +10,15 @@ from backend.ngos.ngo_routes import ngos
 from backend.portfolios.portfolio_routes import portfolios
 from backend.assets.asset_routes import assets
 from backend.positions.position_routes import positions
+from backend.macro.macro_routes import macro
+from backend.geo.geo_routes import geo
+from backend.backtests.backtest_routes import backtests
+from backend.backtests.backtest_routes import backtests
+from backend.performance.performance_routes import performance
+from backend.ml_models.ml_routes import ml_models
+from backend.ml_models.ml_routes import ml_models
+from backend.director.director_routes import director
+from backend.system.system_routes import system
 
 def create_app():
     """
@@ -70,6 +79,15 @@ def create_app():
     app.register_blueprint(portfolios, url_prefix="/portfolio")
     app.register_blueprint(assets, url_prefix="/asset")
     app.register_blueprint(positions, url_prefix="/position")
+    app.register_blueprint(macro, url_prefix="/macro")
+    app.register_blueprint(geo, url_prefix="/geo")
+    app.register_blueprint(backtests, url_prefix="/backtest")
+    app.register_blueprint(backtests, url_prefix="/backtest")
+    app.register_blueprint(performance, url_prefix="/performance")
+    app.register_blueprint(ml_models, url_prefix="/ml")
+    app.register_blueprint(ml_models, url_prefix="/ml")
+    app.register_blueprint(director, url_prefix="/director")
+    app.register_blueprint(system, url_prefix="/system")
 
     # Don't forget to return the app object
     return app

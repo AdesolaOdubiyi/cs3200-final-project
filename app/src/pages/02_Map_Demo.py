@@ -1,104 +1,133 @@
-import logging
-logger = logging.getLogger(__name__)
+# pages/02_Map_Demo.py
+# Stratify - Geospatial Analytics
+# Persona: Political Strategy Advisor / Supply Chain Analyst
+
+import sys
 import streamlit as st
-from streamlit_extras.app_logo import add_logo
 import pandas as pd
 import pydeck as pdk
-from urllib.error import URLError
+import numpy as np
+
+sys.path.append("..")
+from stratify_theme import apply_stratify_theme
 from modules.nav import SideBarLinks
 
+apply_stratify_theme()
 SideBarLinks()
 
-# add the logo
-add_logo("assets/logo.png", height=400)
-
-# set up the page
-st.markdown("# Mapping Demo")
-st.sidebar.header("Mapping Demo")
-st.write(
-    """This Mapping Demo is from the Streamlit Documentation. It shows how to use
-[`st.pydeck_chart`](https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart)
-to display geospatial data."""
+# ============================================
+# STYLES
+# ============================================
+st.markdown(
+    """
+<style>
+.map-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+</style>
+""",
+    unsafe_allow_html=True,
 )
 
-
-@st.cache_data
-def from_data_file(filename):
-    url = (
-        "http://raw.githubusercontent.com/streamlit/"
-        "example-data/master/hello/v1/%s" % filename
-    )
-    return pd.read_json(url)
-
-
-try:
-    ALL_LAYERS = {
-        "Bike Rentals": pdk.Layer(
-            "HexagonLayer",
-            data=from_data_file("bike_rental_stats.json"),
-            get_position=["lon", "lat"],
-            radius=200,
-            elevation_scale=4,
-            elevation_range=[0, 1000],
-            extruded=True,
-        ),
-        "Bart Stop Exits": pdk.Layer(
-            "ScatterplotLayer",
-            data=from_data_file("bart_stop_stats.json"),
-            get_position=["lon", "lat"],
-            get_color=[200, 30, 0, 160],
-            get_radius="[exits]",
-            radius_scale=0.05,
-        ),
-        "Bart Stop Names": pdk.Layer(
-            "TextLayer",
-            data=from_data_file("bart_stop_stats.json"),
-            get_position=["lon", "lat"],
-            get_text="name",
-            get_color=[0, 0, 0, 200],
-            get_size=15,
-            get_alignment_baseline="'bottom'",
-        ),
-        "Outbound Flow": pdk.Layer(
-            "ArcLayer",
-            data=from_data_file("bart_path_stats.json"),
-            get_source_position=["lon", "lat"],
-            get_target_position=["lon2", "lat2"],
-            get_source_color=[200, 30, 0, 160],
-            get_target_color=[200, 30, 0, 160],
-            auto_highlight=True,
-            width_scale=0.0001,
-            get_width="outbound",
-            width_min_pixels=3,
-            width_max_pixels=30,
-        ),
-    }
-    st.sidebar.markdown("### Map Layers")
-    selected_layers = [
-        layer
-        for layer_name, layer in ALL_LAYERS.items()
-        if st.sidebar.checkbox(layer_name, True)
-    ]
-    if selected_layers:
-        st.pydeck_chart(
-            pdk.Deck(
-                map_style="mapbox://styles/mapbox/light-v9",
-                initial_view_state={
-                    "latitude": 37.76,
-                    "longitude": -122.4,
-                    "zoom": 11,
-                    "pitch": 50,
-                },
-                layers=selected_layers,
-            )
-        )
-    else:
-        st.error("Please choose at least one layer above.")
-except URLError as e:
-    st.error(
-        """
-        **This demo requires internet access.**
-        Connection error: %s
+# ============================================
+# HEADER
+# ============================================
+st.markdown(
     """
-        % e.reason
-    )
+    <div style="padding: 1.5rem 0 1rem 0;">
+        <h1 style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.25rem;">
+            Geospatial Analytics
+        </h1>
+        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
+            Supply chain monitoring and asset distribution visualization
+        </p>
+    </div>
+    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================
+# MAP CONTROLS
+# ============================================
+c1, c2 = st.columns([1, 3])
+
+with c1:
+    st.markdown('<div class="map-card">', unsafe_allow_html=True)
+    st.markdown("### ⚙️ Layer Controls")
+    
+    show_assets = st.checkbox("Show Asset Locations", value=True)
+    show_routes = st.checkbox("Show Supply Routes", value=True)
+    show_risk = st.checkbox("Show Risk Zones", value=False)
+    
+    st.markdown("#### Filter by Region")
+    st.multiselect("Regions", ["North America", "Europe", "APAC"], default=["North America", "Europe"])
+    
+    if st.button("Update Map View", type="primary"):
+        show_stratify_loader(duration=1.5, message="Rendering Layers...", style="simultaneous")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with c2:
+    st.markdown("### 🌍 Global Asset Distribution")
+    
+    # Mock Data
+    # 1. Asset Locations (Scatterplot)
+    assets_df = pd.DataFrame({
+        "lat": np.random.normal(37.76, 10, 50),
+        "lon": np.random.normal(-90, 20, 50),
+        "value": np.random.randint(10, 100, 50)
+    })
+    
+    # 2. Supply Routes (Arc)
+    routes_df = pd.DataFrame({
+        "start_lat": [37.77, 40.71, 51.50],
+        "start_lon": [-122.41, -74.00, -0.12],
+        "end_lat": [35.68, 48.85, 1.35],
+        "end_lon": [139.69, 2.35, 103.81],
+        "volume": [100, 50, 80]
+    })
+    
+    layers = []
+    
+    if show_assets:
+        layers.append(pdk.Layer(
+            "ScatterplotLayer",
+            data=assets_df,
+            get_position=["lon", "lat"],
+            get_color=[59, 130, 246, 160],
+            get_radius="value * 1000",
+            pickable=True,
+        ))
+        
+    if show_routes:
+        layers.append(pdk.Layer(
+            "ArcLayer",
+            data=routes_df,
+            get_source_position=["start_lon", "start_lat"],
+            get_target_position=["end_lon", "end_lat"],
+            get_source_color=[34, 197, 94, 160],
+            get_target_color=[239, 68, 68, 160],
+            get_width=5,
+        ))
+
+    st.pydeck_chart(pdk.Deck(
+        map_style="mapbox://styles/mapbox/dark-v10",
+        initial_view_state=pdk.ViewState(
+            latitude=30,
+            longitude=-40,
+            zoom=1.5,
+            pitch=0,
+        ),
+        layers=layers,
+    ))
+
+# ============================================
+# FOOTER
+# ============================================
+st.markdown("<br><br>", unsafe_allow_html=True)
+if st.button("← Return to Dashboard"):
+    st.switch_page("Home.py")
