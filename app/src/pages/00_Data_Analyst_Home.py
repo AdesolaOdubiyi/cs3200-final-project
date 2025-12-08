@@ -6,6 +6,7 @@ import sys
 import streamlit as st
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 sys.path.append("..")
 from stratify_loader import show_stratify_loader  # noqa: E402
@@ -152,8 +153,6 @@ with tab2:
             with st.container():
                 st.markdown("#### Recent Reports")
 
-                from pathlib import Path
-
                 assets_dir = Path(__file__).resolve().parent.parent / "assets"
 
                 reports = [
@@ -177,7 +176,7 @@ with tab2:
                         else:
                             if st.button("⬇", key=f"coming_{r['name']}"):
                                 st.info("Download coming soon — backend report storage not configured.")
-        st.markdown('</div>', unsafe_allow_html=True)
+        # end report container
 
 # --- TAB 3: DATA MANAGEMENT ---
 with tab3:

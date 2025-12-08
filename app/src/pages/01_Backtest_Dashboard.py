@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 
 import streamlit as st
+from typing import Tuple, Optional
 
 
 sys.path.append("..")
@@ -179,7 +180,7 @@ def render_header() -> None:
 
 
 
-def render_configuration():
+def render_configuration() -> Tuple[str, str, object, object, Optional[str]]:
    st.markdown("### Configuration")
 
 
@@ -283,8 +284,12 @@ def render_configuration():
 
 
 def render_run_button(
-   selected_portfolio, selected_benchmark, start_date, end_date, date_error
-):
+    selected_portfolio: str,
+    selected_benchmark: str,
+    start_date,
+    end_date,
+    date_error: Optional[str],
+) -> None:
    st.markdown("<br>", unsafe_allow_html=True)
    run_col1, run_col2, run_col3 = st.columns([1, 2, 1])
 
@@ -333,7 +338,7 @@ def render_run_button(
 
 
 
-def render_results():
+def render_results() -> None:
    st.markdown("### Results")
 
 
@@ -565,8 +570,8 @@ def render_results():
 
 
 
-def render_tips():
-   with st.expander("Backtesting Best Practices"):
+def render_tips() -> None:
+    with st.expander("Backtesting Best Practices"):
        st.markdown(
            """
            ### How to Run Effective Backtests
@@ -613,16 +618,14 @@ def render_tips():
 
 
 
-def render_back_nav_and_footer():
+def render_back_nav_and_footer() -> None:
    st.markdown("<br>", unsafe_allow_html=True)
-
 
    st.markdown('<div class="dark-btn">', unsafe_allow_html=True)
    if st.button("← Back to Analyst Dashboard", key="back_analyst"):
        show_stratify_loader(duration=0.8, style="simultaneous", speed="fast")
        st.switch_page("pages/10_Analyst_Home.py")
    st.markdown("</div>", unsafe_allow_html=True)
-
 
    st.markdown(
        """

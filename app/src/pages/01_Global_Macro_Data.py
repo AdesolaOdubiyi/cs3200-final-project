@@ -3,6 +3,8 @@
 # Persona: Economic Research / Analyst
 
 import sys
+from typing import List
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -14,6 +16,12 @@ from stratify_loader import show_stratify_loader
 
 apply_stratify_theme()
 SideBarLinks()
+
+# Constants
+YEARS = list(range(1960, 2025))[::-1]
+
+# Ensure session key exists
+st.session_state.setdefault('wb_data_fetched', False)
 
 # ============================================
 # STYLES
@@ -84,15 +92,14 @@ with st.container():
         )
     with col2:
         # Replace the year slider with a compact dropdown to avoid vertical crowding
-        years = list(range(1960, 2024))[::-1]  # show recent years first
         default_year = 2022
         try:
-            default_index = years.index(default_year)
+            default_index = YEARS.index(default_year)
         except ValueError:
             default_index = 0
-        year = st.selectbox("Select Year", years, index=default_index)
+        year = st.selectbox("Select Year", YEARS, index=default_index)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.write("")
     if st.button("Fetch Data", type="primary"):
         # Ideally call World Bank API here; demo uses mocked data for speed
         show_stratify_loader(duration=2, message="Querying World Bank API...", style="sequential")
@@ -105,13 +112,34 @@ with st.container():
 if st.session_state.get('wb_data_fetched'):
     st.markdown("### 📊 Global Trends")
 
-    # Demo/mock data for charts
-    data = {
-        "Country": ["United States", "China", "Japan", "Germany", "India", "United Kingdom", "France", "Brazil"],
-        "Value": [25.46, 17.96, 4.23, 4.07, 3.38, 3.07, 2.78, 1.92],
-        "Region": ["North America", "East Asia", "East Asia", "Europe", "South Asia", "Europe", "Europe", "Latin America"],
-    }
-    df = pd.DataFrame(data)
+    # Demo/mock data for charts (moved to a small helper for clarity)
+    def _mock_macro_df() -> pd.DataFrame:
+        data = {
+            "Country": [
+                "United States",
+                "China",
+                "Japan",
+                "Germany",
+                "India",
+                "United Kingdom",
+                "France",
+                "Brazil",
+            ],
+            "Value": [25.46, 17.96, 4.23, 4.07, 3.38, 3.07, 2.78, 1.92],
+            "Region": [
+                "North America",
+                "East Asia",
+                "East Asia",
+                "Europe",
+                "South Asia",
+                "Europe",
+                "Europe",
+                "Latin America",
+            ],
+        }
+        return pd.DataFrame(data)
+
+    df = _mock_macro_df()
 
     # Give the chart more horizontal room (wider main column)
     c1, c2 = st.columns([4, 1])
@@ -165,6 +193,6 @@ if st.session_state.get('wb_data_fetched'):
 # ============================================
 # FOOTER
 # ============================================
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.write("")
 if st.button("← Return to Dashboard"):
     st.switch_page("Home.py")
