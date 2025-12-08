@@ -22,10 +22,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -53,10 +51,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -71,10 +67,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # MODEL REGISTRY
-# ============================================
+
 st.markdown("### 🤖 Active Models")
 
 # Fetch models from backend
@@ -117,10 +111,8 @@ for m in models:
         """,
         unsafe_allow_html=True
     )
-
-# ============================================
 # TRAINING INTERFACE
-# ============================================
+
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("### 🏋️ Train New Model")
 
@@ -148,10 +140,8 @@ with st.expander("Configure Training Job"):
                 st.error("Failed to start training job.")
         except:
             st.error("Backend connection failed.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Admin Console"):
     st.switch_page("pages/20_Admin_Home.py")

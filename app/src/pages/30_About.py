@@ -18,10 +18,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -46,10 +44,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="text-align: center; padding: 3rem 0;">
@@ -63,10 +59,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # PROJECT INFO
-# ============================================
+
 c1, c2 = st.columns([1, 1])
 
 with c1:
@@ -93,10 +87,8 @@ with c2:
         - **Rajesh Singh**: Administrator (System Health, User Mgmt)
         """
     )
-
-# ============================================
 # TECH STACK
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align:center;'>🛠️ Technology Stack</h3>", unsafe_allow_html=True)
 
@@ -149,10 +141,8 @@ with tc4:
         """,
         unsafe_allow_html=True
     )
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 c_foot = st.columns([1, 1, 1])
 with c_foot[1]:

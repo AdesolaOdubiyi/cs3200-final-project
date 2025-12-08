@@ -14,10 +14,8 @@ from modules.nav import SideBarLinks
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -41,10 +39,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -59,10 +55,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # ENDPOINT TESTER
-# ============================================
+
 col1, col2 = st.columns([1, 2])
 
 with col1:
@@ -124,10 +118,8 @@ with col2:
         st.info("Send a request to view the response payload.")
         
     st.markdown('</div>', unsafe_allow_html=True)
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Admin Console"):
     st.switch_page("pages/20_Admin_Home.py")

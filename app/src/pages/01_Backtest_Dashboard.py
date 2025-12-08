@@ -24,12 +24,7 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-
-# ============================================
 # GLOBAL DARK THEME + COMPONENT STYLES
-# ============================================
-
 
 st.markdown(
    """
@@ -159,14 +154,7 @@ st.markdown(
 """,
    unsafe_allow_html=True,
 )
-
-
-# ============================================
 # HEADER
-# ============================================
-
-
-
 
 def render_header() -> None:
    st.markdown(
@@ -183,16 +171,7 @@ def render_header() -> None:
        unsafe_allow_html=True,
    )
    st.markdown("---")
-
-
-
-
-# ============================================
 # CONFIGURATION SECTION
-# ============================================
-
-
-
 
 def render_configuration():
    st.markdown("### Configuration")
@@ -299,16 +278,7 @@ def render_configuration():
 
 
    return selected_portfolio, selected_benchmark, start_date, end_date, date_error
-
-
-
-
-# ============================================
 # RUN BACKTEST BUTTON
-# ============================================
-
-
-
 
 def render_run_button(
    selected_portfolio, selected_benchmark, start_date, end_date, date_error
@@ -350,16 +320,7 @@ def render_run_button(
 
 
    st.markdown("---")
-
-
-
-
-# ============================================
 # RESULTS SECTION
-# ============================================
-
-
-
 
 def render_results():
    st.markdown("### Results")
@@ -571,16 +532,7 @@ def render_results():
 
 
    st.markdown("---")
-
-
-
-
-# ============================================
 # TIPS SECTION
-# ============================================
-
-
-
 
 def render_tips():
    with st.expander("Backtesting Best Practices"):
@@ -619,16 +571,7 @@ def render_tips():
            - Revisit regularly as market regimes change 
            """
        )
-
-
-
-
-# ============================================
 # NAVIGATION BACK + FOOTER
-# ============================================
-
-
-
 
 def render_back_nav_and_footer():
    st.markdown("<br>", unsafe_allow_html=True)
@@ -652,14 +595,7 @@ def render_back_nav_and_footer():
        """,
        unsafe_allow_html=True,
    )
-
-
-
-
-# ============================================
 # PAGE RENDER ORDER
-# ============================================
-
 
 render_header()
 portfolio, benchmark, start_date, end_date, date_error = render_configuration()

@@ -1,6 +1,4 @@
-#------------------------------------------------------------
 # This file creates a shared DB connection resource
-#------------------------------------------------------------
 from flaskext.mysql import MySQL
 from pymysql import cursors
 

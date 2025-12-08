@@ -14,10 +14,8 @@ from modules.nav import SideBarLinks
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -32,10 +30,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -50,10 +46,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # DATA SELECTOR
-# ============================================
+
 st.markdown('<div class="macro-card">', unsafe_allow_html=True)
 st.markdown("### 🔍 Indicator Selection")
 
@@ -71,10 +65,8 @@ if st.button("Fetch Data", type="primary"):
     show_stratify_loader(duration=2, message="Querying World Bank API...", style="sequential")
     st.session_state['wb_data_fetched'] = True
 st.markdown('</div>', unsafe_allow_html=True)
-
-# ============================================
 # VISUALIZATION
-# ============================================
+
 if st.session_state.get('wb_data_fetched'):
     st.markdown("### 📊 Global Trends")
     
@@ -111,10 +103,8 @@ if st.session_state.get('wb_data_fetched'):
         st.markdown("#### Regional Breakdown")
         st.dataframe(df.groupby("Region")["Value"].sum().reset_index(), hide_index=True)
         st.markdown('</div>', unsafe_allow_html=True)
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Dashboard"):
     st.switch_page("Home.py")

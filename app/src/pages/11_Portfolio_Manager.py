@@ -13,10 +13,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -67,10 +65,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -85,10 +81,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # MAIN CONTENT
-# ============================================
 
 # Tabs for different workflows
 tab1, tab2, tab3 = st.tabs(["Active Portfolios", "Trade Execution", "Create New Model"])
@@ -231,10 +224,8 @@ with tab3:
                 st.success(f"✅ Portfolio '{p_name}' created successfully!")
             else:
                 st.error("Please enter a portfolio name.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 col_back, _, _ = st.columns([1, 2, 1])
 with col_back:

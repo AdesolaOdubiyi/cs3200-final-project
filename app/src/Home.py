@@ -26,9 +26,7 @@ if 'authenticated' not in st.session_state:
 # Sidebar
 SideBarLinks(show_home=True)
 
-# ============================================
 # CUSTOM CSS FOR HOME
-# ============================================
 st.markdown("""
 <style>
     /* Hero Specific Styling */
@@ -114,10 +112,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================
 # HERO SECTION
-# ============================================
-
 st.markdown('<div class="hero-container">', unsafe_allow_html=True)
 st.image("assets/logo_clean.png", width=140)
 st.markdown("""
@@ -131,10 +126,7 @@ st.markdown("""
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
-# ============================================
 # KEY METRICS
-# ============================================
-
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
@@ -171,10 +163,7 @@ with c4:
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-# ============================================
 # ACCESS PORTAL
-# ============================================
-
 st.markdown("### Select Workspace")
 st.markdown("<div style='color:#64748b; margin-bottom:2rem;'>Choose a role to enter the platform environment.</div>", unsafe_allow_html=True)
 
@@ -232,9 +221,7 @@ with r4:
         st.session_state['role'] = 'administrator'
         st.switch_page('pages/20_Admin_Home.py')
 
-# ============================================
 # FOOTER
-# ============================================
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 st.markdown("""
     <div style="text-align: center; color: #475569; font-size: 0.8rem; border-top: 1px solid #1e293b; padding-top: 2rem;">

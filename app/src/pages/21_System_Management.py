@@ -21,10 +21,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -57,10 +55,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -75,10 +71,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # FETCH DATA
-# ============================================
+
 config_data = {}
 logs_data = []
 
@@ -96,10 +90,8 @@ except:
         "environment": "Unknown", "version": "0.0.0", 
         "feature_flags": {"beta_features": False, "dark_mode_default": True}
     }
-
-# ============================================
 # CONFIGURATION
-# ============================================
+
 c1, c2 = st.columns([1, 1])
 
 with c1:
@@ -166,10 +158,8 @@ with c2:
         st.success("Schema updated to version 004.")
         
     st.markdown('</div>', unsafe_allow_html=True)
-
-# ============================================
 # SYSTEM LOGS
-# ============================================
+
 st.markdown("### 📜 Recent System Logs")
 
 if logs_data:
@@ -187,10 +177,8 @@ if logs_data:
     )
 else:
     st.info("No logs available.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Admin Console"):
     st.switch_page("pages/20_Admin_Home.py")

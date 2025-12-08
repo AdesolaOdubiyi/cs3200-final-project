@@ -21,10 +21,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -58,10 +56,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -76,10 +72,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # KEY RISK METRICS
-# ============================================
+
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
@@ -131,10 +125,8 @@ with c4:
     )
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# ============================================
 # EXPOSURE ANALYSIS
-# ============================================
+
 col_left, col_right = st.columns([2, 1])
 
 with col_left:
@@ -175,10 +167,8 @@ with col_right:
         unsafe_allow_html=True
     )
     st.markdown("</div>", unsafe_allow_html=True)
-
-# ============================================
 # STRESS TESTING
-# ============================================
+
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("### 🌪️ Scenario Stress Testing")
 
@@ -195,10 +185,8 @@ with st.expander("Run Stress Test Scenario", expanded=True):
         if st.button("Simulate Impact", use_container_width=True):
             show_stratify_loader(duration=2, message="Running Monte Carlo Simulation...", style="cascade")
             st.error(f"Estimated Portfolio Impact: -18.4% ($175,800 Loss)")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("---")
 f_col1, f_col2 = st.columns(2)

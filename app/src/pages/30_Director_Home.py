@@ -21,10 +21,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -61,10 +59,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -79,10 +75,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # FETCH DATA
-# ============================================
+
 summary_data = {}
 alerts_data = []
 activity_data = {}
@@ -106,9 +100,7 @@ except:
     alerts_data = []
     activity_data = {"backtests_run": 0, "new_models": 0, "research_notes": 0}
 
-# ============================================
 # FIRM-WIDE METRICS
-# ============================================
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -148,10 +140,8 @@ with c3:
     )
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# ============================================
 # STRATEGY DRIFT & ALERTS
-# ============================================
+
 col_main, col_side = st.columns([2, 1])
 
 with col_main:
@@ -210,10 +200,8 @@ with col_side:
     st.markdown("### Market Intelligence")
     st.info("Fed meeting minutes released: Hawkish tone implies rate volatility.")
     st.info("Tech sector rotation observed in last 48h.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("View Detailed Risk Report"):
     show_stratify_loader(duration=1, message="Loading Risk Dashboard...")

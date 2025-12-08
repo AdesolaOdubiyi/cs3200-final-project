@@ -15,9 +15,7 @@ from modules.nav import SideBarLinks
 apply_stratify_theme()
 SideBarLinks()
 
-# ============================================
 # STYLES
-# ============================================
 st.markdown(
     """
 <style>
@@ -33,9 +31,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ============================================
 # HEADER
-# ============================================
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -51,9 +47,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ============================================
 # FETCH DATA
-# ============================================
 try:
     response = requests.get("http://web-api:4000/performance/firm/summary")
     if response.status_code == 200:
@@ -66,9 +60,7 @@ except:
     data = None
 
 if data:
-    # ============================================
     # TOP LEVEL METRICS
-    # ============================================
     c1, c2, c3 = st.columns(3)
     
     with c1:
@@ -102,9 +94,7 @@ if data:
             unsafe_allow_html=True
         )
 
-    # ============================================
     # FUND PERFORMANCE TABLE
-    # ============================================
     st.markdown("### 📊 Fund Performance")
     
     df_funds = pd.DataFrame(data['funds'])
@@ -125,9 +115,7 @@ if data:
         }
     )
     
-    # ============================================
     # VISUALIZATION
-    # ============================================
     st.markdown("### 🥧 AUM Distribution")
     
     fig = px.pie(data['funds'], values='aum', names='name', hole=0.4, template="plotly_dark")
@@ -138,9 +126,7 @@ if data:
     with col_viz:
         st.plotly_chart(fig, use_container_width=True)
 
-# ============================================
 # FOOTER
-# ============================================
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Director Home"):
     st.switch_page("pages/30_Director_Home.py")

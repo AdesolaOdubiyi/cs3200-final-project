@@ -22,12 +22,7 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-
-# ============================================
 # GLOBAL DARK THEME + CARD STYLING
-# ============================================
-
 
 st.markdown("""
 <style>
@@ -133,14 +128,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
-
-
-
-
-# ============================================
 # HEADER
-# ============================================
-
 
 def render_header():
    st.markdown("""
@@ -152,14 +140,7 @@ def render_header():
        </div>
    """, unsafe_allow_html=True)
    st.markdown("---")
-
-
-
-
-# ============================================
 # METRICS
-# ============================================
-
 
 def render_key_metrics():
    st.markdown("### Portfolio Overview")
@@ -219,14 +200,7 @@ def render_key_metrics():
 
 
    st.write("")
-
-
-
-
-# ============================================
 # QUICK ACTIONS
-# ============================================
-
 
 def render_quick_actions():
    st.markdown("### Quick Actions")
@@ -259,14 +233,7 @@ def render_quick_actions():
 
 
    st.markdown("---")
-
-
-
-
-# ============================================
 # EMPTY STATE
-# ============================================
-
 
 def render_empty_state(title):
    st.markdown(f"""
@@ -274,14 +241,7 @@ def render_empty_state(title):
            <h4>{title}</h4>
        </div>
    """, unsafe_allow_html=True)
-
-
-
-
-# ============================================
 # PORTFOLIOS / BACKTESTS / WATCHLIST
-# ============================================
-
 
 def render_portfolios_section():
    st.markdown("### My Portfolios")
@@ -299,14 +259,7 @@ def render_watchlist_section():
    st.markdown("### My Watchlist")
    render_empty_state("Your watchlist is empty")
    st.markdown("---")
-
-
-
-
-# ============================================
 # CLEAN MINIMAL NAVIGATION BUTTONS
-# ============================================
-
 
 def render_navigation_section():
    st.markdown("### Navigate to Other Dashboards")
@@ -341,14 +294,7 @@ def render_navigation_section():
 
 
    st.markdown("---")
-
-
-
-
-# ============================================
 # HELP + FOOTER
-# ============================================
-
 
 def render_help_section():
    with st.expander("Getting Started Guide"):
@@ -369,14 +315,7 @@ def render_footer():
            </span>
        </div>
    """, unsafe_allow_html=True)
-
-
-
-
-# ============================================
 # PAGE RENDER ORDER
-# ============================================
-
 
 render_header()
 render_key_metrics()

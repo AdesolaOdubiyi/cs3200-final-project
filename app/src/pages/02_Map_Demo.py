@@ -14,10 +14,8 @@ from modules.nav import SideBarLinks
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -32,10 +30,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -50,10 +46,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # MAP CONTROLS
-# ============================================
+
 c1, c2 = st.columns([1, 3])
 
 with c1:
@@ -124,10 +118,8 @@ with c2:
         ),
         layers=layers,
     ))
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Dashboard"):
     st.switch_page("Home.py")

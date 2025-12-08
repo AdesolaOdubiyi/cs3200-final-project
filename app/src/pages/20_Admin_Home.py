@@ -20,10 +20,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -57,10 +55,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0; display: flex; justify-content: space-between; align-items: center;">
@@ -82,10 +78,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # SYSTEM HEALTH
-# ============================================
+
 st.markdown("### 🖥️ Infrastructure Health")
 c1, c2, c3, c4 = st.columns(4)
 
@@ -136,10 +130,8 @@ with c4:
         """,
         unsafe_allow_html=True,
     )
-
-# ============================================
 # MANAGEMENT TABS
-# ============================================
+
 tab1, tab2, tab3 = st.tabs(["User Management", "Audit Logs", "System Alerts"])
 
 # --- USER MANAGEMENT ---
@@ -207,10 +199,8 @@ with tab3:
     with c_b:
         st.toggle("Weekly Usage Reports", value=False)
         st.toggle("Disk Space Warnings (<10%)", value=True)
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Main Menu"):
     st.switch_page("Home.py")

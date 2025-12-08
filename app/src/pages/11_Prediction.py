@@ -22,10 +22,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -53,10 +51,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -71,10 +67,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # PREDICTION INTERFACE
-# ============================================
+
 col1, col2 = st.columns([1, 2])
 
 with col1:
@@ -142,10 +136,8 @@ with col2:
         3.  **Neural Processing**: Feeds data into a Long Short-Term Memory (LSTM) network.
         4.  **Ensemble Scoring**: Combines outputs from multiple models to reduce variance.
         """)
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Data Analyst Workspace"):
     st.switch_page("pages/00_Data_Analyst_Home.py")

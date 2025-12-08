@@ -21,10 +21,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -47,10 +45,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -65,10 +61,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # CLASSIFICATION INTERFACE
-# ============================================
+
 col1, col2 = st.columns([1, 2])
 
 with col1:
@@ -129,10 +123,8 @@ with col2:
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.info("👈 Adjust asset features and click 'Classify Asset' to run the model.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Dashboard"):
     st.switch_page("Home.py")

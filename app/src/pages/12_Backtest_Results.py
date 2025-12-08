@@ -14,10 +14,8 @@ from modules.nav import SideBarLinks
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -38,10 +36,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -56,10 +52,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # FETCH DATA
-# ============================================
+
 # In a real app, we'd pass the ID via query params or session state
 backtest_id = "BT-1001" 
 
@@ -76,9 +70,8 @@ except:
     data = None
 
 if data:
-    # ============================================
     # KEY METRICS
-    # ============================================
+
     m1, m2, m3, m4 = st.columns(4)
     
     with m1:
@@ -89,10 +82,8 @@ if data:
         st.markdown(f"<div class='result-card'><div style='color:#94a3b8'>Max Drawdown</div><div class='metric-big' style='color:#ef4444'>{data['metrics']['max_drawdown']}</div></div>", unsafe_allow_html=True)
     with m4:
         st.markdown(f"<div class='result-card'><div style='color:#94a3b8'>Win Rate</div><div class='metric-big' style='color:#f59e0b'>{data['metrics']['win_rate']}</div></div>", unsafe_allow_html=True)
-
-    # ============================================
     # EQUITY CURVE
-    # ============================================
+
     st.markdown("### 📈 Equity Curve")
     
     df_curve = pd.DataFrame({
@@ -104,10 +95,8 @@ if data:
     fig.update_traces(line_color='#3b82f6', line_width=3)
     fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig, use_container_width=True)
-
-    # ============================================
     # TRADE LOG
-    # ============================================
+
     st.markdown("### 📝 Trade Log")
     
     df_trades = pd.DataFrame(data['trades'])
@@ -117,10 +106,8 @@ if data:
     if st.button("Export Results to PDF"):
         show_stratify_loader(duration=2, message="Generating PDF...", style="sequential")
         st.success("Report downloaded.")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Backtest Dashboard"):
     st.switch_page("pages/01_Backtest_Dashboard.py")

@@ -16,7 +16,6 @@ from backend.ml_models import model01
 simple_routes = Blueprint("simple_routes", __name__)
 
 
-# ------------------------------------------------------------
 # / is the most basic route
 # Once the api container is started, in a browser, go to
 # localhost:4000/playlist
@@ -29,7 +28,6 @@ def welcome():
     return response
 
 
-# ------------------------------------------------------------
 # /playlist returns the sample playlist data contained in playlist.py
 # (imported above)
 @simple_routes.route("/playlist")
@@ -40,7 +38,6 @@ def get_playlist_data():
     return response
 
 
-# ------------------------------------------------------------
 @simple_routes.route("/niceMessage", methods=["GET"])
 def affirmation():
     current_app.logger.info("GET /niceMessage")
@@ -54,7 +51,6 @@ def affirmation():
     return response
 
 
-# ------------------------------------------------------------
 # Demonstrates how to redirect from one route to another.
 @simple_routes.route("/message")
 def mesage():

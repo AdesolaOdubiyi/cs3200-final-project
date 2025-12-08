@@ -20,10 +20,8 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-
-# ============================================
 # STYLES
-# ============================================
+
 st.markdown(
     """
 <style>
@@ -46,10 +44,8 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # HEADER
-# ============================================
+
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -64,10 +60,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ============================================
 # ESG OVERVIEW
-# ============================================
+
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -105,10 +99,8 @@ with c3:
         """,
         unsafe_allow_html=True,
     )
-
-# ============================================
 # IMPACT PORTFOLIO
-# ============================================
+
 st.markdown("### 🌍 Impact Portfolio Holdings")
 
 df = pd.DataFrame({
@@ -123,10 +115,8 @@ st.dataframe(
     use_container_width=True,
     hide_index=True
 )
-
-# ============================================
 # ACTIONS
-# ============================================
+
 st.markdown("<br>", unsafe_allow_html=True)
 col_a, col_b = st.columns(2)
 
@@ -145,10 +135,8 @@ with col_b:
         show_stratify_loader(duration=1, message="Opening Form...")
         # In a real app, this would link to pages/15_Add_NGO.py
         st.success("Form Opened (Demo)")
-
-# ============================================
 # FOOTER
-# ============================================
+
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Return to Dashboard"):
     st.switch_page("Home.py")
