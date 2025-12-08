@@ -18,7 +18,7 @@ Prerequisites:
 
 - Docker and Docker Compose installed on your machine.
 
-1. Create API `.env` from the template (do NOT commit secrets):
+1. Create API `.env` from the template:
 
 ```bash
 cp api/.env.template api/.env
