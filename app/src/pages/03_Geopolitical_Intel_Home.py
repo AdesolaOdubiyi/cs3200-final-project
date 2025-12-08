@@ -100,7 +100,6 @@ st.map(
     latitude="lat",
     longitude="lon",
     size="risk_score",
-    color="risk_score",
     zoom=1,
 )
 
