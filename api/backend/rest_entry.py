@@ -6,7 +6,6 @@ from logging.handlers import RotatingFileHandler
 
 from backend.db_connection import db
 from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
 from backend.portfolios.portfolio_routes import portfolios
 from backend.assets.asset_routes import assets
 from backend.positions.position_routes import positions
@@ -14,7 +13,6 @@ from backend.macro.macro_routes import macro
 from backend.geo.geo_routes import geo
 from backend.backtests.backtest_routes import backtests
 from backend.performance.performance_routes import performance
-from backend.ml_models.ml_routes import ml_models
 from backend.director.director_routes import director
 from backend.system.system_routes import system
 from backend.transactions.transaction_routes import transactions
@@ -23,6 +21,7 @@ from backend.alerts.alert_routes import alerts
 from backend.users.user_routes import users
 from backend.watchlists.watchlist_routes import watchlists
 from backend.audit.audit_routes import audit
+
 
 def create_app():
     """
@@ -42,11 +41,11 @@ def create_app():
     app = Flask(__name__)
 
     app.logger.setLevel(logging.DEBUG)
-    app.logger.info('API startup')
+    app.logger.info("API startup")
 
     # Configure file logging if needed
     #   Uncomment the code in the setup_logging function
-    # setup_logging(app) 
+    # setup_logging(app)
 
     # Load environment variables
     # This function reads all the values from inside
@@ -79,7 +78,6 @@ def create_app():
     # and give a url prefix to each
     app.logger.info("create_app(): registering blueprints with Flask app object.")
     app.register_blueprint(simple_routes)
-    app.register_blueprint(ngos, url_prefix="/ngo")
     app.register_blueprint(portfolios, url_prefix="/portfolio")
     app.register_blueprint(assets, url_prefix="/asset")
     app.register_blueprint(positions, url_prefix="/position")
@@ -87,7 +85,6 @@ def create_app():
     app.register_blueprint(geo, url_prefix="/geo")
     app.register_blueprint(backtests, url_prefix="/backtest")
     app.register_blueprint(performance, url_prefix="/performance")
-    app.register_blueprint(ml_models, url_prefix="/ml")
     app.register_blueprint(director, url_prefix="/director")
     app.register_blueprint(system, url_prefix="/system")
     app.register_blueprint(transactions, url_prefix="/transaction")
@@ -99,6 +96,7 @@ def create_app():
 
     # Don't forget to return the app object
     return app
+
 
 def setup_logging(app):
     """
@@ -130,8 +128,8 @@ def setup_logging(app):
     # file_handler.setFormatter(logging.Formatter(
     #     '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
     # ))
-    
-    # Make sure we are capturing all levels of logging into the log files. 
+
+    # Make sure we are capturing all levels of logging into the log files.
     # file_handler.setLevel(logging.DEBUG)  # Capture all levels in file
     # app.logger.addHandler(file_handler)
 
@@ -144,5 +142,3 @@ def setup_logging(app):
     # console_handler.setLevel(logging.DEBUG)
     # app.logger.addHandler(console_handler)
     pass
-    
-    
