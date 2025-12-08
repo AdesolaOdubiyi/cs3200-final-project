@@ -28,104 +28,58 @@ st.markdown("""
 <style>
 /* ==================== METRIC CARDS ==================== */
 .metric-card {
-   padding: 1.5rem;
-   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-   border: 1px solid #334155;
-   border-radius: 12px;
-   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-   transition: all 0.3s ease;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-white) 100%);
+    border: 1px solid var(--bg-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
 }
-
 
 .metric-card:hover {
-   border-color: #3b82f6;
-   box-shadow: 0 8px 16px rgba(59,130,246,0.2);
-   transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 16px rgba(59,130,246,0.08);
+    transform: translateY(-2px);
 }
-
 
 .metric-label {
-   color: #64748b;
-   font-size: 0.85rem;
-   font-weight: 600;
-   text-transform: uppercase;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
-
 
 .metric-value {
-   font-size: 2rem;
-   font-weight: 700;
-   font-family: "JetBrains Mono", monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
 }
-
 
 .metric-subtext {
-   color: #94a3b8;
-   font-size: 0.85rem;
-   margin-top: 0.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
 }
-
 
 /* Colored dots */
-.metric-dot {
-   width: 10px;
-   height: 10px;
-   border-radius: 999px;
-   margin-right: 8px;
-}
-.dot-blue { background-color: #3b82f6; }
-.dot-green { background-color: #22c55e; }
-.dot-orange { background-color: #fb923c; }
+.metric-dot { width: 10px; height: 10px; border-radius: 999px; margin-right: 8px; }
+.dot-blue { background-color: var(--primary); }
+.dot-green { background-color: var(--success); }
+.dot-orange { background-color: var(--warning); }
 .dot-purple { background-color: #a855f7; }
 
-
 /* ==================== EMPTY STATE ==================== */
-.empty-state {
-   padding: 2rem;
-   background: #1e293b;
-   border: 2px dashed #475569;
-   border-radius: 8px;
-   text-align: center;
-}
-.empty-state h4 {
-   color: #cbd5e1;
-}
-.empty-state p {
-   color: #94a3b8;
-}
-
+.empty-state { padding: 2rem; background: var(--bg-light); border: 2px dashed var(--bg-border); border-radius: 8px; text-align: center; }
+.empty-state h4 { color: var(--text-primary); }
+.empty-state p { color: var(--text-tertiary); }
 
 /* ==================== NAVIGATION BUTTONS ==================== */
-.nav-dark-btn > button {
-   width: 100% !important;
-   height: 50px !important;
-   background-color: #1e293b !important;
-   color: #e2e8f0 !important;
-   border: 1px solid #334155 !important;
-   border-radius: 10px !important;
-   font-size: 1rem !important;
-   transition: all 0.2s ease;
-}
-.nav-dark-btn > button:hover {
-   background-color: #334155 !important;
-   border-color: #3b82f6 !important;
-   color: #ffffff !important;
-}
-
+.nav-dark-btn > button { width: 100% !important; height: 50px !important; background-color: transparent !important; color: var(--text-primary) !important; border: 1px solid var(--bg-border) !important; border-radius: 10px !important; font-size: 1rem !important; transition: all 0.2s ease; }
+.nav-dark-btn > button:hover { background-color: rgba(59,130,246,0.06) !important; border-color: var(--primary) !important; color: #ffffff !important; }
 
 /* Footer */
-.stratify-footer {
-   text-align: center;
-   padding: 2rem 0;
-   color: #64748b;
-   font-size: 0.85rem;
-   border-top: 1px solid #334155;
-   margin-top: 2rem;
-}
-.stratify-footer-subtext {
-   font-size: 0.75rem;
-   color: #475569;
-}
+.stratify-footer { text-align: center; padding: 2rem 0; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--bg-border); margin-top: 2rem; }
+.stratify-footer-subtext { font-size: 0.75rem; color: var(--bg-medium); }
 </style>
 """, unsafe_allow_html=True)
 # HEADER
@@ -133,8 +87,8 @@ st.markdown("""
 def render_header():
    st.markdown("""
        <div style="text-align:center; padding: 2rem 0 1rem 0;">
-           <h1 style="font-size:2.5rem; color:#60a5fa;">Analyst Dashboard</h1>
-           <p style="font-size:1.1rem; color:#94a3b8;">
+           <h1 style="font-size:2.5rem; color:var(--primary);">Analyst Dashboard</h1>
+           <p style="font-size:1.1rem; color:var(--text-tertiary);">
                Welcome back, Jonathan Chen | Asset Management Analyst
            </p>
        </div>

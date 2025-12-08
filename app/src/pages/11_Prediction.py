@@ -22,8 +22,10 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
-# STYLES
 
+# ============================================
+# STYLES
+# ============================================
 st.markdown(
     """
 <style>
@@ -32,7 +34,38 @@ st.markdown(
     border: 1px solid #334155;
     border-radius: 12px;
     padding: 1.5rem;
-    margin-bottom: 1rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+/* Make form submit buttons inside pred-card use primary blue */
+.pred-card form button {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--primary-dark) !important;
+    width: 100% !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 8px !important;
+}
+.pred-card form button:hover {
+    background: var(--primary-dark) !important;
+}
+
+/* Hide empty block placeholders (top rounded empty boxes) */
+main div:empty { display: none !important; }
+main > div > div:empty { display: none !important; }
+main > div > div > div:empty { display: none !important; }
+
+/* Stronger selectors for Streamlit form submit button inside pred-card */
+.pred-card form button, .pred-card form [type="submit"], .pred-card .stButton>button, .pred-card button.st-a11yButton {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--primary-dark) !important;
+    width: 100% !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 8px !important;
+}
+.pred-card form button:disabled, .pred-card .stButton>button:disabled {
+    opacity: 0.65 !important;
 }
 
 .confidence-high {
@@ -51,8 +84,10 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-# HEADER
 
+# ============================================
+# HEADER
+# ============================================
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
@@ -67,28 +102,33 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-# PREDICTION INTERFACE
 
+# ============================================
+# PREDICTION INTERFACE
+# ============================================
 col1, col2 = st.columns([1, 2])
 
 with col1:
+    # Compact input form inside a single card (cleaner layout, no empty containers)
     st.markdown('<div class="pred-card">', unsafe_allow_html=True)
-    st.markdown("### 🎛️ Model Parameters")
-    
-    ticker = st.text_input("Asset Ticker", value="NVDA")
-    horizon = st.selectbox("Forecast Horizon", ["7 Days", "30 Days", "90 Days", "1 Year"])
-    model_type = st.selectbox("Model Architecture", ["LSTM (Deep Learning)", "XGBoost Ensemble", "ARIMA (Statistical)"])
-    
-    st.markdown("#### Feature Selection")
-    st.checkbox("Include Macro Indicators", value=True)
-    st.checkbox("Include Sentiment Analysis", value=True)
-    st.checkbox("Include Technical Indicators", value=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Generate Forecast", type="primary", use_container_width=True):
+    with st.form("prediction_form"):
+        st.markdown("### 🎛️ Model Parameters")
+        ticker = st.text_input("Asset Ticker", value="NVDA")
+        horizon = st.selectbox("Forecast Horizon", ["7 Days", "30 Days", "90 Days", "1 Year"])
+        model_type = st.selectbox("Model Architecture", ["LSTM (Deep Learning)", "XGBoost Ensemble", "ARIMA (Statistical)"])
+
+        st.markdown("#### Feature Selection")
+        inc_macro = st.checkbox("Include Macro Indicators", value=True)
+        inc_sent = st.checkbox("Include Sentiment Analysis", value=True)
+        inc_tech = st.checkbox("Include Technical Indicators", value=True)
+
+        submitted = st.form_submit_button("Generate Forecast")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if submitted:
         show_stratify_loader(duration=2.5, message="Running Neural Network...", style="cascade")
         st.session_state['prediction_run'] = True
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.session_state['prediction_ticker'] = ticker
 
 with col2:
     if st.session_state.get('prediction_run'):
@@ -126,18 +166,50 @@ with col2:
             
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.info("👈 Configure parameters and click 'Generate Forecast' to see AI predictions.")
-        
-        # Placeholder for "How it works"
+        st.markdown('<div class="pred-card">', unsafe_allow_html=True)
         st.markdown("### How Stratify AI Works")
-        st.markdown("""
-        1.  **Data Ingestion**: Aggregates price, volume, news sentiment, and macro data.
-        2.  **Feature Engineering**: Calculates RSI, MACD, Bollinger Bands, and custom alpha signals.
-        3.  **Neural Processing**: Feeds data into a Long Short-Term Memory (LSTM) network.
-        4.  **Ensemble Scoring**: Combines outputs from multiple models to reduce variance.
-        """)
+        st.markdown(
+            """
+            1.  **Data Ingestion**: Aggregates price, volume, news sentiment, and macro data.
+            2.  **Feature Engineering**: Calculates RSI, MACD, Bollinger Bands, and custom alpha signals.
+            3.  **Neural Processing**: Feeds data into a Long Short-Term Memory (LSTM) network.
+            4.  **Ensemble Scoring**: Combines outputs from multiple models to reduce variance.
+            """
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================
 # FOOTER
+# Inject small client-side cleanup script to remove residual rounded empty boxes
+st.markdown(
+        """
+        <script>
+        setTimeout(function(){
+            try{
+                const main = document.querySelector('main');
+                if(!main) return;
+                // Consider the first several divs — Streamlit often nests layout wrappers here
+                const candidates = Array.from(main.querySelectorAll('div'));
+                for(let el of candidates.slice(0,10)){
+                    const style = window.getComputedStyle(el);
+                    const bg = style.backgroundColor || '';
+                    const br = parseFloat(style.borderRadius) || 0;
+                    const h = el.clientHeight || 0;
+                    // Heuristic: rounded rectangle, moderate height, non-transparent background
+                    if(br >= 8 && h >= 28 && h <= 160 && bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent'){
+                        // If visually empty (no meaningful text), remove it
+                        if(!el.textContent || !el.textContent.trim()){
+                            el.remove();
+                        }
+                    }
+                }
+            }catch(e){console && console.warn && console.warn(e)}
+        }, 300);
+        </script>
+        """,
+        unsafe_allow_html=True,
+)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("← Back to Data Analyst Workspace"):
-    st.switch_page("pages/00_Data_Analyst_Home.py")
+        st.switch_page("pages/00_Data_Analyst_Home.py")

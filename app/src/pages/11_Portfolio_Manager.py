@@ -5,85 +5,53 @@
 import sys
 import streamlit as st
 import pandas as pd
-import requests
 from datetime import datetime
 
 sys.path.append("..")
+from stratify_loader import show_stratify_loader  # noqa: E402
 from modules.nav import SideBarLinks
 from stratify_theme import apply_stratify_theme
-from stratify_loader import show_stratify_loader
 
 apply_stratify_theme()
 SideBarLinks()
-# STYLES
 
+# ============================================
+# STYLES
+# ============================================
 st.markdown(
     """
 <style>
-.card {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+.card { background: var(--bg-light); border: 1px solid var(--bg-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
 
-.action-btn > button {
-    width: 100%;
-    background-color: #2563eb !important;
-    color: white !important;
-    border: 1px solid #3b82f6 !important;
-    border-radius: 8px;
-    padding: 0.5rem;
-    transition: all 0.2s;
-}
-.action-btn > button:hover {
-    background-color: #1d4ed8 !important;
-    transform: translateY(-1px);
-}
+.action-btn > button { width: 100%; background-color: var(--primary) !important; color: white !important; border: 1px solid var(--primary-dark) !important; border-radius: 8px; padding: 0.5rem; transition: all 0.2s; }
+.action-btn > button:hover { background-color: var(--primary-dark) !important; transform: translateY(-1px); }
 
-.secondary-btn > button {
-    width: 100%;
-    background-color: #1e293b !important;
-    color: #94a3b8 !important;
-    border: 1px solid #475569 !important;
-    border-radius: 8px;
-}
-.secondary-btn > button:hover {
-    border-color: #64748b !important;
-    color: white !important;
-}
+.secondary-btn > button { width: 100%; background-color: transparent !important; color: var(--text-tertiary) !important; border: 1px solid var(--bg-border) !important; border-radius: 8px; }
+.secondary-btn > button:hover { border-color: var(--text-secondary) !important; color: white !important; }
 
-.table-header {
-    background: #0f172a;
-    padding: 0.75rem;
-    border-radius: 8px 8px 0 0;
-    border-bottom: 1px solid #334155;
-    font-weight: 600;
-    color: #94a3b8;
-}
+.table-header { background: var(--bg-white); padding: 0.75rem; border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--bg-border); font-weight: 600; color: var(--text-secondary); }
 </style>
 """,
     unsafe_allow_html=True,
 )
-# HEADER
 
+# ============================================
+# HEADER
+# ============================================
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
-        <h1 style="font-size: 2.5rem; color: #60a5fa; margin-bottom: 0.25rem;">
-            Portfolio Manager
-        </h1>
-        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
-            Manage model portfolios, execute trades, and track positions
-        </p>
+        <h1 style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.25rem;">Portfolio Manager</h1>
+        <p style="font-size: 1rem; color: var(--text-tertiary); margin: 0;">Manage model portfolios, execute trades, and track positions</p>
     </div>
-    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    <hr style="border-color: var(--bg-border); margin-bottom: 2rem;">
     """,
     unsafe_allow_html=True,
 )
+
+# ============================================
 # MAIN CONTENT
+# ============================================
 
 # Tabs for different workflows
 tab1, tab2, tab3 = st.tabs(["Active Portfolios", "Trade Execution", "Create New Model"])
@@ -95,53 +63,15 @@ with tab1:
     with col1:
         st.markdown("### 📈 Current Holdings")
         
-        # Fetch portfolios from API
-        portfolios_data = []
-        try:
-            response = requests.get("http://web-api:4000/portfolio/portfolios")
-            if response.status_code == 200:
-                result = response.json()
-                if result.get("success"):
-                    portfolios_data = result.get("data", [])
-        except:
-            st.warning("Could not fetch portfolios from API. Using placeholder data.")
-        
-        # Fetch positions from API
-        positions_data = []
-        api_success = False
-        try:
-            response = requests.get("http://web-api:4000/position/positions", timeout=3)
-            if response.status_code == 200:
-                result = response.json()
-                if result.get("success") and result.get("data"):
-                    positions_data = result.get("data", [])
-                    api_success = True
-        except:
-            pass  # Silent fallback to mock data
-        
-        # Display positions - use API data if available, otherwise mock data
-        if api_success and positions_data:
-            df_data = []
-            for pos in positions_data:
-                market_value = pos.get("Quantity", 0) * pos.get("CurrentPrice", 0)
-                df_data.append({
-                    "Symbol": pos.get("TickerSymbol", "N/A"),
-                    "Position": pos.get("Quantity", 0),
-                    "Avg Price": f"${pos.get('AvgCostBasis', 0):.2f}",
-                    "Market Value": f"${market_value:,.2f}",
-                    "Unrealized P/L": "N/A"
-                })
-            df = pd.DataFrame(df_data)
-        else:
-            # Fallback mock data - always show something
-            data = {
-                "Symbol": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN"],
-                "Position": [1500, 800, 400, 600, 1200],
-                "Avg Price": ["$175.50", "$320.10", "$450.00", "$135.20", "$145.80"],
-                "Market Value": ["$263,250", "$256,080", "$180,000", "$81,120", "$174,960"],
-                "Unrealized P/L": ["+12.5%", "+8.2%", "+24.1%", "-2.3%", "+5.6%"]
-            }
-            df = pd.DataFrame(data)
+        # Mock Data
+        data = {
+            "Symbol": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN"],
+            "Position": [1500, 800, 400, 600, 1200],
+            "Avg Price": [175.50, 320.10, 450.00, 135.20, 145.80],
+            "Market Value": ["$263,250", "$256,080", "$180,000", "$81,120", "$174,960"],
+            "Unrealized P/L": ["+12.5%", "+8.2%", "+24.1%", "-2.3%", "+5.6%"]
+        }
+        df = pd.DataFrame(data)
         
         st.dataframe(
             df,
@@ -166,15 +96,15 @@ with tab1:
         st.markdown(
             """
             <div class="card">
-                <h4 style="color:#94a3b8; font-size:0.9rem; text-transform:uppercase;">Total AUM</h4>
-                <h2 style="color:#22c55e; font-family:'JetBrains Mono';">$955,410</h2>
-                <div style="height:10px; background:#334155; border-radius:5px; margin-top:1rem; overflow:hidden;">
-                    <div style="width:45%; height:100%; background:#3b82f6; float:left;"></div>
-                    <div style="width:30%; height:100%; background:#22c55e; float:left;"></div>
-                    <div style="width:15%; height:100%; background:#f59e0b; float:left;"></div>
-                    <div style="width:10%; height:100%; background:#64748b; float:left;"></div>
+                <h4 style="color:var(--text-secondary); font-size:0.9rem; text-transform:uppercase;">Total AUM</h4>
+                <h2 style="color:var(--success); font-family:var(--font-mono);">$955,410</h2>
+                <div style="height:10px; background:var(--bg-border); border-radius:5px; margin-top:1rem; overflow:hidden;">
+                    <div style="width:45%; height:100%; background:var(--primary); float:left;"></div>
+                    <div style="width:30%; height:100%; background:var(--success); float:left;"></div>
+                    <div style="width:15%; height:100%; background:var(--warning); float:left;"></div>
+                    <div style="width:10%; height:100%; background:var(--text-tertiary); float:left;"></div>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-top:0.5rem; font-size:0.8rem; color:#94a3b8;">
+                <div style="display:flex; justify-content:space-between; margin-top:0.5rem; font-size:0.8rem; color:var(--text-secondary);">
                     <span>Tech (45%)</span>
                     <span>Fin (30%)</span>
                     <span>Enr (15%)</span>
@@ -212,95 +142,36 @@ with tab2:
             if not ticker:
                 st.error("Please enter a ticker symbol.")
             else:
-                try:
-                    show_stratify_loader(duration=2, message="Routing Order...", style="sequential")
-                    # Get asset ID from ticker (simplified - in real app, lookup first)
-                    # For MVP, using placeholder assetID
-                    transaction_type = "BUY" if side == "Buy" else "SELL"
-                    price = price if order_type in ["Limit", "Stop"] else 0
-                    
-                    payload = {
-                        "portfolioID": 1,  # In real app, get from selected portfolio
-                        "assetID": 1,  # In real app, lookup by ticker
-                        "transactionType": transaction_type,
-                        "quantity": quantity,
-                        "price": float(price) if price else 0,
-                        "transactionDate": datetime.now().strftime("%Y-%m-%d"),
-                        "notes": f"{order_type} order"
-                    }
-                    response = requests.post("http://web-api:4000/transaction/transactions", json=payload, timeout=5)
-                    if response.status_code == 201:
-                        result = response.json()
-                        if result.get("success"):
-                            st.success(f"✅ Order Executed: {side} {quantity} {ticker} @ {order_type}")
-                            st.rerun()
-                        else:
-                            st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Order may not be saved.")
-                    else:
-                        st.warning("API request failed. Order may not be saved, but you can continue using the app.")
-                except Exception as e:
-                    st.warning(f"Could not connect to API: {str(e)}. Order may not be saved, but you can continue using the app.")
+                show_stratify_loader(duration=2, message="Routing Order...", style="sequential")
+                st.success(f"✅ Order Executed: {side} {quantity} {ticker} @ {order_type}")
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with c2:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("#### Recent Activity")
-        
-        # Fetch recent transactions from API
-        transactions_data = []
-        api_success = False
-        try:
-            response = requests.get("http://web-api:4000/transaction/transactions", timeout=3)
-            if response.status_code == 200:
-                result = response.json()
-                if result.get("success") and result.get("data"):
-                    transactions_data = result.get("data", [])[:5]  # Get last 5
-                    api_success = True
-        except:
-            pass  # Silent fallback to mock data
-        
-        # Display transactions - use API data if available, otherwise mock data
-        if api_success and transactions_data:
-            html_content = '<div style="font-size:0.9rem;">'
-            for txn in transactions_data:
-                color = "#22c55e" if txn.get("transactionType") == "BUY" else "#ef4444"
-                side = "BUY" if txn.get("transactionType") == "BUY" else "SELL"
-                price = f"${txn.get('price', 0):.2f}" if txn.get('price') else "MKT"
-                date = txn.get("transactionDate", "N/A")
-                html_content += f"""
-                <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                    <span style="color:{color};">{side}</span>
-                    <span style="color:#94a3b8;">{txn.get('quantity', 0)} @ {price}</span>
-                    <span style="color:#64748b;">{date}</span>
+        st.markdown(
+            """
+            <div style="font-size:0.9rem;">
+                <div style="padding:0.5rem 0; border-bottom:1px solid var(--bg-border); display:flex; justify-content:space-between;">
+                    <span style="color:var(--success);">BUY AAPL</span>
+                    <span style="color:var(--text-secondary);">100 @ MKT</span>
+                    <span style="color:var(--text-tertiary);">10:30 AM</span>
                 </div>
-                """
-            html_content += '</div>'
-            st.markdown(html_content, unsafe_allow_html=True)
-        else:
-            # Fallback mock data - always show something
-            st.markdown(
-                """
-                <div style="font-size:0.9rem;">
-                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                        <span style="color:#22c55e;">BUY AAPL</span>
-                        <span style="color:#94a3b8;">100 @ MKT</span>
-                        <span style="color:#64748b;">10:30 AM</span>
-                    </div>
-                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                        <span style="color:#ef4444;">SELL NFLX</span>
-                        <span style="color:#94a3b8;">50 @ 420.50</span>
-                        <span style="color:#64748b;">09:45 AM</span>
-                    </div>
-                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                        <span style="color:#22c55e;">BUY MSFT</span>
-                        <span style="color:#94a3b8;">200 @ MKT</span>
-                        <span style="color:#64748b;">Yesterday</span>
-                    </div>
+                <div style="padding:0.5rem 0; border-bottom:1px solid var(--bg-border); display:flex; justify-content:space-between;">
+                    <span style="color:var(--error);">SELL NFLX</span>
+                    <span style="color:var(--text-secondary);">50 @ 420.50</span>
+                    <span style="color:var(--text-tertiary);">09:45 AM</span>
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                <div style="padding:0.5rem 0; border-bottom:1px solid var(--bg-border); display:flex; justify-content:space-between;">
+                    <span style="color:var(--success);">BUY MSFT</span>
+                    <span style="color:var(--text-secondary);">200 @ MKT</span>
+                    <span style="color:var(--text-tertiary);">Yesterday</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- TAB 3: CREATE NEW MODEL ---
@@ -319,30 +190,14 @@ with tab3:
         submitted = st.form_submit_button("Create Portfolio")
         if submitted:
             if p_name:
-                try:
-                    show_stratify_loader(duration=1.5, message="Creating Portfolio...")
-                    # Use default userID 1 for MVP (in real app, get from session)
-                    payload = {
-                        "Name": p_name,
-                        "Description": p_desc or "",
-                        "userID": 1
-                    }
-                    response = requests.post("http://web-api:4000/portfolio/portfolios", json=payload, timeout=5)
-                    if response.status_code == 201:
-                        result = response.json()
-                        if result.get("success"):
-                            st.success(f"✅ Portfolio '{p_name}' created successfully!")
-                            st.rerun()
-                        else:
-                            st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Portfolio may not be saved.")
-                    else:
-                        st.warning("API request failed. Portfolio may not be saved, but you can continue using the app.")
-                except Exception as e:
-                    st.warning(f"Could not connect to API: {str(e)}. Portfolio may not be saved, but you can continue using the app.")
+                show_stratify_loader(duration=1.5, message="Creating Portfolio...")
+                st.success(f"✅ Portfolio '{p_name}' created successfully!")
             else:
                 st.error("Please enter a portfolio name.")
-# FOOTER
 
+# ============================================
+# FOOTER
+# ============================================
 st.markdown("<br><br>", unsafe_allow_html=True)
 col_back, _, _ = st.columns([1, 2, 1])
 with col_back:

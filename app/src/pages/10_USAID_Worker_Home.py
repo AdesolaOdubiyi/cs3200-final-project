@@ -25,21 +25,9 @@ SideBarLinks()
 st.markdown(
     """
 <style>
-.esg-card {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-.esg-score {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #22c55e;
-    margin: 0.5rem 0;
-}
+.esg-card { background: var(--bg-light); border: 1px solid var(--bg-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; text-align: center; }
+.esg-score { font-size: 2.5rem; font-weight: 800; color: var(--success); margin: 0.5rem 0; }
+.esg-subtext { color: var(--text-tertiary); }
 </style>
 """,
     unsafe_allow_html=True,
@@ -49,14 +37,10 @@ st.markdown(
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
-        <h1 style="font-size: 2.5rem; color: #22c55e; margin-bottom: 0.25rem;">
-            ESG & Impact
-        </h1>
-        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
-            Environmental, Social, and Governance performance tracking
-        </p>
+        <h1 style="font-size: 2.5rem; color: var(--success); margin-bottom: 0.25rem;">ESG & Impact</h1>
+        <p style="font-size: 1rem; color: var(--text-tertiary); margin: 0;">Environmental, Social, and Governance performance tracking</p>
     </div>
-    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    <hr style="border-color: var(--bg-border); margin-bottom: 2rem;">
     """,
     unsafe_allow_html=True,
 )
@@ -68,9 +52,9 @@ with c1:
     st.markdown(
         """
         <div class="esg-card">
-            <div style="color:#94a3b8; text-transform:uppercase;">Environmental Score</div>
+            <div style="color:var(--text-tertiary); text-transform:uppercase;">Environmental Score</div>
             <div class="esg-score">84</div>
-            <div style="color:#22c55e;">Top 10% of Peers</div>
+            <div style="color:var(--success);">Top 10% of Peers</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -80,9 +64,9 @@ with c2:
     st.markdown(
         """
         <div class="esg-card">
-            <div style="color:#94a3b8; text-transform:uppercase;">Social Score</div>
-            <div class="esg-score" style="color:#f59e0b;">62</div>
-            <div style="color:#f59e0b;">Average Performance</div>
+            <div style="color:var(--text-tertiary); text-transform:uppercase;">Social Score</div>
+            <div class="esg-score" style="color:var(--warning);">62</div>
+            <div style="color:var(--warning);">Average Performance</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -92,9 +76,9 @@ with c3:
     st.markdown(
         """
         <div class="esg-card">
-            <div style="color:#94a3b8; text-transform:uppercase;">Governance Score</div>
-            <div class="esg-score" style="color:#3b82f6;">91</div>
-            <div style="color:#3b82f6;">Industry Leader</div>
+            <div style="color:var(--text-tertiary); text-transform:uppercase;">Governance Score</div>
+            <div class="esg-score" style="color:var(--primary);">91</div>
+            <div style="color:var(--primary);">Industry Leader</div>
         </div>
         """,
         unsafe_allow_html=True,

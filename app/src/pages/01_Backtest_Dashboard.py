@@ -4,7 +4,7 @@
 
 import sys
 from datetime import datetime, timedelta
-import requests
+
 
 import streamlit as st
 
@@ -24,154 +24,160 @@ from stratify_theme import apply_stratify_theme
 
 apply_stratify_theme()
 SideBarLinks()
+
+
+# ============================================
 # GLOBAL DARK THEME + COMPONENT STYLES
+# ============================================
+
 
 st.markdown(
-   """
+    """
 <style>
-/* Config + results cards */
+/* Use theme CSS variables for consistent styling */
 .config-card {
-   padding: 1.5rem;
-   background: #1e293b;
-   border: 1px solid #334155;
-   border-radius: 12px;
-   margin-bottom: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    border: 1px solid var(--bg-border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
 }
-
 
 .results-card {
-   padding: 2rem;
-   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-   border: 1px solid #334155;
-   border-radius: 12px;
-   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--bg-light) 0%, var(--background) 100%);
+    border: 1px solid var(--bg-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.12);
 }
 
-
-/* Metric grid */
 .metric-row {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-   gap: 1rem;
-   margin: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
 }
-
 
 .metric-item {
-   padding: 1rem;
-   background: #0f172a;
-   border: 1px solid #334155;
-   border-radius: 8px;
-   text-align: center;
+    padding: 1rem;
+    background: var(--bg-white);
+    border: 1px solid var(--bg-border);
+    border-radius: 8px;
+    text-align: center;
 }
-
 
 .metric-label {
-   color: #94a3b8;
-   font-size: 0.85rem;
-   text-transform: uppercase;
-   letter-spacing: 0.05em;
-   margin-bottom: 0.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
 }
-
 
 .metric-value {
-   font-size: 1.75rem;
-   font-weight: 700;
-   font-family: "JetBrains Mono", monospace;
-   color: #3b82f6;
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--primary);
 }
 
-
-/* Empty state */
 .empty-state {
-   padding: 2.5rem 2rem;
-   background: #1e293b;
-   border: 2px dashed #475569;
-   border-radius: 8px;
-   text-align: center;
+    padding: 2.5rem 2rem;
+    background: var(--bg-light);
+    border: 2px dashed var(--bg-border);
+    border-radius: 8px;
+    text-align: center;
 }
 .empty-state h3, .empty-state h4 {
-   color: #cbd5e1;
-   margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
 }
 .empty-state p {
-   color: #94a3b8;
-   margin: 0.25rem 0;
+    color: var(--text-tertiary);
+    margin: 0.25rem 0;
 }
 
-
-/* Dark buttons (wrapper-based) */
 .primary-dark-btn > button {
-   width: 100% !important;
-   height: 50px !important;
-   background-color: #2563eb !important;
-   color: #e2e8f0 !important;
-   border: 1px solid #3b82f6 !important;
-   border-radius: 10px !important;
-   font-size: 1rem !important;
-   font-weight: 600 !important;
-   transition: all 0.2s ease;
+    width: 100% !important;
+    height: 50px !important;
+    background-color: var(--primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--primary_light) !important;
+    border-radius: 10px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease;
 }
 .primary-dark-btn > button:hover {
-   background-color: #1d4ed8 !important;
-   border-color: #60a5fa !important;
+    background-color: var(--primary_dark) !important;
 }
-
 
 .dark-btn > button {
-   width: 100% !important;
-   height: 46px !important;
-   background-color: #1e293b !important;
-   color: #e2e8f0 !important;
-   border: 1px solid #334155 !important;
-   border-radius: 10px !important;
-   font-size: 0.95rem !important;
-   transition: all 0.2s ease;
+    width: 100% !important;
+    height: 46px !important;
+    background-color: var(--bg-light) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--bg-border) !important;
+    border-radius: 10px !important;
+    font-size: 0.95rem !important;
+    transition: all 0.2s ease;
 }
 .dark-btn > button:hover {
-   background-color: #334155 !important;
-   border-color: #3b82f6 !important;
-   color: #ffffff !important;
+    background-color: var(--bg-medium) !important;
+    border-color: var(--primary) !important;
 }
 
-
-/* Footer */
 .stratify-footer {
-   text-align: center;
-   padding: 2rem 0;
-   color: #64748b;
-   font-size: 0.85rem;
-   border-top: 1px solid #334155;
-   margin-top: 2rem;
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--bg-border);
+    margin-top: 2rem;
 }
 .stratify-footer-subtext {
-   font-size: 0.75rem;
-   color: #475569;
-   margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--bg-border);
+    margin-top: 0.5rem;
 }
 </style>
 """,
-   unsafe_allow_html=True,
+    unsafe_allow_html=True,
 )
+
+
+# ============================================
 # HEADER
+# ============================================
+
+
+
 
 def render_header() -> None:
    st.markdown(
        """
        <div style="padding: 1.5rem 0 1rem 0;">
-           <h1 style="font-size: 2.5rem; color: #60a5fa; margin-bottom: 0.25rem;">
-               Backtest Dashboard
-           </h1>
-           <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
-               Test investment strategies against historical market data
-           </p>
+            <h1 style="font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 0.25rem; font-family:var(--font-main); text-transform:uppercase; letter-spacing:0.04em;">
+                Backtest Dashboard
+            </h1>
+            <p style="font-size: 1rem; color: var(--text-tertiary); margin: 0; font-family:var(--font-main);">
+                Test investment strategies against historical market data
+            </p>
        </div>
        """,
        unsafe_allow_html=True,
    )
    st.markdown("---")
+
+
+
+
+# ============================================
 # CONFIGURATION SECTION
+# ============================================
+
+
+
 
 def render_configuration():
    st.markdown("### Configuration")
@@ -182,76 +188,42 @@ def render_configuration():
 
    # Portfolio selection
    with config_col1:
-       st.markdown('<div class="config-card">', unsafe_allow_html=True)
-
-
-       st.markdown(
-           "<p style='font-weight:600; font-size:0.95rem; margin-bottom:0.5rem;'>Select Portfolio</p>",
-           unsafe_allow_html=True,
-       )
-
-
-       # Fetch portfolios from API
-       portfolio_options = []
-       portfolio_map = {}
-       api_success = False
-       try:
-           response = requests.get("http://web-api:4000/portfolio/portfolios", timeout=3)
-           if response.status_code == 200:
-               result = response.json()
-               if result.get("success") and result.get("data"):
-                   portfolios = result.get("data", [])
-                   if portfolios:
-                       portfolio_options = [p.get("Name", f"Portfolio {p.get('portfolioID')}") for p in portfolios]
-                       portfolio_map = {p.get("Name", f"Portfolio {p.get('portfolioID')}"): p.get("portfolioID") for p in portfolios}
-                       api_success = True
-       except:
-           pass  # Silent fallback to mock data
-       
-       # Fallback to mock portfolios if API fails
-       if not api_success or not portfolio_options:
-           portfolio_options = ["Growth Strategy", "Income Portfolio", "Tech Focus", "Balanced Fund"]
-           portfolio_map = {name: idx + 1 for idx, name in enumerate(portfolio_options)}
-       
-       selected_portfolio = st.selectbox(
-           "Choose a portfolio to backtest:",
-           options=portfolio_options,
-           index=0,
-           label_visibility="collapsed",
-       )
-
-
-       if selected_portfolio == "No portfolios available":
-           st.warning(
-               "⚠️ No portfolios found. Create a portfolio first from the Analyst Dashboard.",
-               icon="⚠️",
+       with st.container():
+           st.markdown(
+               "<p style='font-weight:600; font-size:0.95rem; margin-bottom:0.5rem;'>Select Portfolio</p>",
+               unsafe_allow_html=True,
            )
 
+           portfolio_options = ["No portfolios available"]  # TODO: replace with DB query
+           selected_portfolio = st.selectbox(
+               "Choose a portfolio to backtest:",
+               options=portfolio_options,
+               index=0,
+               label_visibility="collapsed",
+           )
 
-       st.markdown("</div>", unsafe_allow_html=True)
+           if selected_portfolio == "No portfolios available":
+               st.warning(
+                   "No portfolios found. Create a portfolio first from the Analyst Dashboard.",
+                   icon="⚠️",
+               )
 
 
    # Benchmark selection
    with config_col2:
-       st.markdown('<div class="config-card">', unsafe_allow_html=True)
+       with st.container():
+           st.markdown(
+               "<p style='font-weight:600; font-size:0.95rem; margin-bottom:0.5rem;'>Benchmark</p>",
+               unsafe_allow_html=True,
+           )
 
-
-       st.markdown(
-           "<p style='font-weight:600; font-size:0.95rem; margin-bottom:0.5rem;'>Benchmark</p>",
-           unsafe_allow_html=True,
-       )
-
-
-       benchmark_options = ["S&P 500", "NASDAQ Composite", "Dow Jones", "Russell 2000"]
-       selected_benchmark = st.selectbox(
-           "Compare against:",
-           options=benchmark_options,
-           index=0,
-           label_visibility="collapsed",
-       )
-
-
-       st.markdown("</div>", unsafe_allow_html=True)
+           benchmark_options = ["S&P 500", "NASDAQ Composite", "Dow Jones", "Russell 2000"]
+           selected_benchmark = st.selectbox(
+               "Compare against:",
+               options=benchmark_options,
+               index=0,
+               label_visibility="collapsed",
+           )
 
 
    # Date range (no extra card wrapper – removes the “empty container”)
@@ -299,7 +271,16 @@ def render_configuration():
 
 
    return selected_portfolio, selected_benchmark, start_date, end_date, date_error
+
+
+
+
+# ============================================
 # RUN BACKTEST BUTTON
+# ============================================
+
+
+
 
 def render_run_button(
    selected_portfolio, selected_benchmark, start_date, end_date, date_error
@@ -324,47 +305,12 @@ def render_run_button(
                st.error("❌ Please fix date errors before running a backtest.")
                return
 
-           try:
-               show_stratify_loader(
-                   duration=2.5, style="cascade", speed="normal", message="Running backtest"
-               )
-               
-               # Create backtest via API
-               portfolio_id = portfolio_map.get(selected_portfolio, 1)
-               payload = {
-                   "name": f"Backtest: {selected_portfolio}",
-                   "description": f"Backtest for {selected_portfolio} vs {selected_benchmark}",
-                   "startDate": start_date.strftime("%Y-%m-%d"),
-                   "endDate": end_date.strftime("%Y-%m-%d"),
-                   "initialCapital": 100000,
-                   "strategyConfig": {
-                       "portfolioID": portfolio_id,
-                       "benchmark": selected_benchmark
-                   },
-                   "userID": 1
-               }
-               
-               response = requests.post("http://web-api:4000/backtest/backtests", json=payload, timeout=5)
-               if response.status_code == 201:
-                   result = response.json()
-                   if result.get("success"):
-                       backtest_id = result.get("data", {}).get("backtestID")
-                       st.session_state["backtest_run"] = True
-                       st.session_state["backtest_portfolio"] = selected_portfolio
-                       st.session_state["backtest_benchmark"] = selected_benchmark
-                       st.session_state["backtest_start"] = start_date
-                       st.session_state["backtest_end"] = end_date
-                       st.session_state["backtest_id"] = backtest_id
-                       st.success("✅ Backtest created successfully!")
-                       st.rerun()
-                   else:
-                       st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Showing results anyway.")
-               else:
-                   st.warning("API request failed. Showing mock results.")
-           except Exception as e:
-               st.warning(f"Could not connect to API: {str(e)}. Showing mock results.")
-           
-           # Always set session state for UI display (even if API fails)
+
+           show_stratify_loader(
+               duration=2.5, style="cascade", speed="normal", message="Running backtest"
+           )
+
+
            st.session_state["backtest_run"] = True
            st.session_state["backtest_portfolio"] = selected_portfolio
            st.session_state["backtest_benchmark"] = selected_benchmark
@@ -372,8 +318,20 @@ def render_run_button(
            st.session_state["backtest_end"] = end_date
 
 
+           st.rerun()
+
+
    st.markdown("---")
+
+
+
+
+# ============================================
 # RESULTS SECTION
+# ============================================
+
+
+
 
 def render_results():
    st.markdown("### Results")
@@ -392,18 +350,18 @@ def render_results():
        # Header
        st.markdown(
            f"""
-           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #334155;">
+           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--bg-border);">
                <div>
-                   <h3 style="margin:0; color:#60a5fa;">Backtest Results</h3>
-                   <p style="margin:0.5rem 0 0 0; color:#94a3b8; font-size:0.9rem;">
+                   <h3 style="margin:0; color:var(--primary); font-family:var(--font-main);">Backtest Results</h3>
+                   <p style="margin:0.5rem 0 0 0; color:var(--text-tertiary); font-size:0.9rem;">
                        Portfolio: <strong>{portfolio}</strong><br>
                        Benchmark: <strong>{benchmark}</strong><br>
                        Period: {start} to {end}
                    </p>
                </div>
-               <div style="color:#22c55e; font-size:0.85rem; text-align:right;">
+               <div style="color:var(--success); font-size:0.85rem; text-align:right;">
                    <div style="font-weight:600;">Status: Complete</div>
-                   <div style="color:#94a3b8;">Sample placeholder data</div>
+                   <div style="color:var(--text-tertiary);">Sample placeholder data</div>
                </div>
            </div>
            """,
@@ -421,7 +379,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Total Return</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        vs {benchmark}: --
                    </div>
                </div>
@@ -430,7 +388,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Annualized Return (CAGR)</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        Risk-adjusted coming soon
                    </div>
                </div>
@@ -439,7 +397,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Volatility</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        Std. deviation of returns
                    </div>
                </div>
@@ -448,7 +406,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Sharpe Ratio</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        Risk-adjusted performance
                    </div>
                </div>
@@ -457,7 +415,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Max Drawdown</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        Peak-to-trough loss
                    </div>
                </div>
@@ -466,7 +424,7 @@ def render_results():
                <div class="metric-item">
                    <div class="metric-label">Beta vs Benchmark</div>
                    <div class="metric-value">--</div>
-                   <div style="color:#64748b; font-size:0.8rem; margin-top:0.5rem;">
+                   <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.5rem;">
                        Sensitivity to {benchmark}
                    </div>
                </div>
@@ -539,17 +497,28 @@ def render_results():
 
 
        with action_col1:
-           st.markdown('<div class="dark-btn">', unsafe_allow_html=True)
-           if st.button("Download Report", key="download_report"):
-               st.info("Report generation coming soon.")
-           st.markdown("</div>", unsafe_allow_html=True)
+           # Download functionality not yet implemented — show disabled control
+           st.markdown(
+               """
+               <div style="width:100%;">
+                   <button disabled style="width:100%;height:44px;background:var(--bg-light);color:var(--text-secondary);border:1px solid var(--bg-border);border-radius:8px;cursor:not-allowed">Download Report</button>
+               </div>
+               """,
+               unsafe_allow_html=True,
+           )
+           st.caption("Report generation — backend integration coming soon")
 
 
        with action_col2:
-           st.markdown('<div class="dark-btn">', unsafe_allow_html=True)
-           if st.button("Save Results", key="save_results"):
-               st.info("Save functionality coming soon.")
-           st.markdown("</div>", unsafe_allow_html=True)
+           st.markdown(
+               """
+               <div style="width:100%;">
+                   <button disabled style="width:100%;height:44px;background:var(--bg-light);color:var(--text-secondary);border:1px solid var(--bg-border);border-radius:8px;cursor:not-allowed">Save Results</button>
+               </div>
+               """,
+               unsafe_allow_html=True,
+           )
+           st.caption("Save results — backend integration coming soon")
 
 
        with action_col3:
@@ -573,7 +542,7 @@ def render_results():
                    Configure your portfolio, benchmark, and time period above, then click
                    <strong>Run Backtest</strong> to see how your strategy would have performed.
                </p>
-               <p style="color:#64748b; font-size:0.9rem; margin-top:1rem;">
+               <p style="color:var(--text-tertiary); font-size:0.9rem; margin-top:1rem;">
                    • Zero financial risk<br>
                    • Benchmark-relative performance<br>
                    • Risk metrics like volatility and drawdown
@@ -585,7 +554,16 @@ def render_results():
 
 
    st.markdown("---")
+
+
+
+
+# ============================================
 # TIPS SECTION
+# ============================================
+
+
+
 
 def render_tips():
    with st.expander("Backtesting Best Practices"):
@@ -624,7 +602,16 @@ def render_tips():
            - Revisit regularly as market regimes change 
            """
        )
+
+
+
+
+# ============================================
 # NAVIGATION BACK + FOOTER
+# ============================================
+
+
+
 
 def render_back_nav_and_footer():
    st.markdown("<br>", unsafe_allow_html=True)
@@ -648,7 +635,14 @@ def render_back_nav_and_footer():
        """,
        unsafe_allow_html=True,
    )
+
+
+
+
+# ============================================
 # PAGE RENDER ORDER
+# ============================================
+
 
 render_header()
 portfolio, benchmark, start_date, end_date, date_error = render_configuration()

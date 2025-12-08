@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 from modules.nav import SideBarLinks
-from stratify_theme import apply_stratify_theme
+from stratify_theme import apply_stratify_theme, get_color
 
 apply_stratify_theme()
 SideBarLinks()
@@ -27,8 +27,8 @@ st.markdown(
     """
 <style>
 .metric-box {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--bg-light);
+    border: 1px solid var(--bg-border);
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
@@ -36,18 +36,19 @@ st.markdown(
 .metric-val {
     font-size: 2rem;
     font-weight: 700;
-    font-family: 'JetBrains Mono';
+    font-family: var(--font-mono);
     margin: 0.5rem 0;
+    color: var(--text-primary);
 }
 .metric-lbl {
-    color: #94a3b8;
+    color: var(--text-tertiary);
     font-size: 0.85rem;
     text-transform: uppercase;
 }
 
 .risk-card {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--bg-light);
+    border: 1px solid var(--bg-border);
     border-radius: 12px;
     padding: 1.5rem;
     height: 100%;
@@ -61,14 +62,14 @@ st.markdown(
 st.markdown(
     """
     <div style="padding: 1.5rem 0 1rem 0;">
-        <h1 style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.25rem;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.25rem;">
             Risk Intelligence
         </h1>
-        <p style="font-size: 1rem; color: #94a3b8; margin: 0;">
+        <p style="font-size: 1rem; color: var(--text-tertiary); margin: 0;">
             Firm-wide exposure monitoring and stress testing
         </p>
     </div>
-    <hr style="border-color: #334155; margin-bottom: 2rem;">
+    <hr style="border-color: var(--bg-border); margin-bottom: 2rem;">
     """,
     unsafe_allow_html=True,
 )
@@ -81,8 +82,8 @@ with c1:
         """
         <div class="metric-box">
             <div class="metric-lbl">Value at Risk (95%)</div>
-            <div class="metric-val" style="color:#ef4444;">$42.5K</div>
-            <div style="color:#94a3b8; font-size:0.8rem;">Daily VaR</div>
+            <div class="metric-val" style="color: var(--error);">$42.5K</div>
+            <div style="color: var(--text-tertiary); font-size:0.8rem;">Daily VaR</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -93,8 +94,8 @@ with c2:
         """
         <div class="metric-box">
             <div class="metric-lbl">Portfolio Beta</div>
-            <div class="metric-val" style="color:#3b82f6;">1.15</div>
-            <div style="color:#94a3b8; font-size:0.8rem;">vs S&P 500</div>
+            <div class="metric-val" style="color: var(--primary);">1.15</div>
+            <div style="color: var(--text-tertiary); font-size:0.8rem;">vs S&P 500</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -105,8 +106,8 @@ with c3:
         """
         <div class="metric-box">
             <div class="metric-lbl">Sharpe Ratio</div>
-            <div class="metric-val" style="color:#22c55e;">1.84</div>
-            <div style="color:#94a3b8; font-size:0.8rem;">Risk-Adjusted Return</div>
+            <div class="metric-val" style="color: var(--success);">1.84</div>
+            <div style="color: var(--text-tertiary); font-size:0.8rem;">Risk-Adjusted Return</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -117,8 +118,8 @@ with c4:
         """
         <div class="metric-box">
             <div class="metric-lbl">Max Drawdown</div>
-            <div class="metric-val" style="color:#f59e0b;">-12.4%</div>
-            <div style="color:#94a3b8; font-size:0.8rem;">Trailing 12M</div>
+            <div class="metric-val" style="color: var(--warning);">-12.4%</div>
+            <div style="color: var(--text-tertiary); font-size:0.8rem;">Trailing 12M</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -139,7 +140,7 @@ with col_left:
     
     # Simple bar chart as proxy for heatmap in Streamlit
     chart_data = pd.DataFrame({"Sector": sectors, "Exposure (%)": exposure})
-    st.bar_chart(chart_data.set_index("Sector"), color="#3b82f6")
+    st.bar_chart(chart_data.set_index("Sector"), color=get_color('primary'))
     
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -150,17 +151,17 @@ with col_right:
     st.markdown(
         """
         <div style="margin-top:1rem;">
-            <div style="padding:0.75rem; background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; margin-bottom:0.5rem; border-radius:4px;">
-                <strong style="color:#ef4444;">High Tech Exposure</strong><br>
-                <span style="font-size:0.85rem; color:#cbd5e1;">Portfolio A exceeds 40% limit (Current: 45%)</span>
+            <div style="padding:0.75rem; background:rgba(239,68,68,0.08); border-left:4px solid var(--error); margin-bottom:0.5rem; border-radius:4px;">
+                <strong style="color:var(--error);">High Tech Exposure</strong><br>
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Portfolio A exceeds 40% limit (Current: 45%)</span>
             </div>
-            <div style="padding:0.75rem; background:rgba(245,158,11,0.1); border-left:4px solid #f59e0b; margin-bottom:0.5rem; border-radius:4px;">
-                <strong style="color:#f59e0b;">Correlation Spike</strong><br>
-                <span style="font-size:0.85rem; color:#cbd5e1;">Tech & Crypto correlation > 0.85</span>
+            <div style="padding:0.75rem; background:rgba(245,158,11,0.08); border-left:4px solid var(--warning); margin-bottom:0.5rem; border-radius:4px;">
+                <strong style="color:var(--warning);">Correlation Spike</strong><br>
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Tech & Crypto correlation > 0.85</span>
             </div>
-            <div style="padding:0.75rem; background:rgba(59,130,246,0.1); border-left:4px solid #3b82f6; border-radius:4px;">
-                <strong style="color:#3b82f6;">Liquidity Watch</strong><br>
-                <span style="font-size:0.85rem; color:#cbd5e1;">Small cap positions < 2 days volume</span>
+            <div style="padding:0.75rem; background:rgba(59,130,246,0.08); border-left:4px solid var(--primary); border-radius:4px;">
+                <strong style="color:var(--primary);">Liquidity Watch</strong><br>
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Small cap positions < 2 days volume</span>
             </div>
         </div>
         """,
@@ -182,7 +183,7 @@ with st.expander("Run Stress Test Scenario", expanded=True):
     with sc_col2:
         st.write("")
         st.write("")
-        if st.button("Simulate Impact", use_container_width=True):
+        if st.button("Simulate Impact", use_container_width=True, type="primary"):
             show_stratify_loader(duration=2, message="Running Monte Carlo Simulation...", style="cascade")
             st.error(f"Estimated Portfolio Impact: -18.4% ($175,800 Loss)")
 # FOOTER
