@@ -22,6 +22,10 @@ apply_stratify_theme()
 # Initialize Session State
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
+if 'role' not in st.session_state:
+    st.session_state['role'] = None
+if 'persona_name' not in st.session_state:
+    st.session_state['persona_name'] = None
 
 # Sidebar
 SideBarLinks(show_home=True)
@@ -167,59 +171,66 @@ st.markdown("<br><br><br>", unsafe_allow_html=True)
 st.markdown("### Select Workspace")
 st.markdown("<div style='color:#64748b; margin-bottom:2rem;'>Choose a role to enter the platform environment.</div>", unsafe_allow_html=True)
 
+# Persona selector using radio buttons
+persona_options = {
+    "Asset Analyst": {
+        "role": "analyst",
+        "persona_name": "Jonathan Chen",
+        "description": "Portfolio construction, backtesting, and performance attribution.",
+        "page": "pages/10_Analyst_Home.py"
+    },
+    "Data Scientist": {
+        "role": "data_analyst",
+        "persona_name": "Noah Harrison",
+        "description": "Machine learning model development and predictive analytics.",
+        "page": "pages/00_Data_Analyst_Home.py"
+    },
+    "Director": {
+        "role": "director",
+        "persona_name": "Sarah Martinez",
+        "description": "Executive oversight, firm-wide risk, and strategic planning.",
+        "page": "pages/30_Director_Home.py"
+    },
+    "Administrator": {
+        "role": "administrator",
+        "persona_name": "Rajesh Singh",
+        "description": "System configuration, user management, and infrastructure.",
+        "page": "pages/20_Admin_Home.py"
+    }
+}
+
+# Display persona cards with radio button selection
+selected_persona = st.radio(
+    "Select Persona:",
+    options=list(persona_options.keys()),
+    horizontal=True,
+    label_visibility="collapsed"
+)
+
+# Show selected persona details
 r1, r2, r3, r4 = st.columns(4)
+personas_list = list(persona_options.keys())
 
-with r1:
-    st.markdown("""
-    <div class="role-card">
-        <div class="role-title">Asset Analyst</div>
-        <div class="role-desc">Portfolio construction, backtesting, and performance attribution.</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Enter as Analyst", use_container_width=True):
-        show_stratify_loader(duration=1)
-        st.session_state['authenticated'] = True
-        st.session_state['role'] = 'analyst'
-        st.switch_page('pages/10_Analyst_Home.py')
+for idx, (col, persona_key) in enumerate(zip([r1, r2, r3, r4], personas_list)):
+    with col:
+        persona = persona_options[persona_key]
+        is_selected = selected_persona == persona_key
+        border_color = "#3b82f6" if is_selected else "#334155"
+        st.markdown(f"""
+        <div class="role-card" style="border-color: {border_color};">
+            <div class="role-title">{persona_key}</div>
+            <div class="role-desc">{persona['description']}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-with r2:
-    st.markdown("""
-    <div class="role-card">
-        <div class="role-title">Data Scientist</div>
-        <div class="role-desc">Machine learning model development and predictive analytics.</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Enter as Data Sci", use_container_width=True):
-        show_stratify_loader(duration=1)
-        st.session_state['authenticated'] = True
-        st.session_state['role'] = 'data_analyst'
-        st.switch_page('pages/00_Data_Analyst_Home.py')
-
-with r3:
-    st.markdown("""
-    <div class="role-card">
-        <div class="role-title">Director</div>
-        <div class="role-desc">Executive oversight, firm-wide risk, and strategic planning.</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Enter as Director", use_container_width=True):
-        show_stratify_loader(duration=1)
-        st.session_state['authenticated'] = True
-        st.session_state['role'] = 'director'
-        st.switch_page('pages/30_Director_Home.py')
-
-with r4:
-    st.markdown("""
-    <div class="role-card">
-        <div class="role-title">Administrator</div>
-        <div class="role-desc">System configuration, user management, and infrastructure.</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Enter as Admin", use_container_width=True):
-        show_stratify_loader(duration=1)
-        st.session_state['authenticated'] = True
-        st.session_state['role'] = 'administrator'
-        st.switch_page('pages/20_Admin_Home.py')
+# Enter button
+if st.button("Enter Workspace", type="primary", use_container_width=True):
+    persona = persona_options[selected_persona]
+    show_stratify_loader(duration=1)
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = persona['role']
+    st.session_state['persona_name'] = persona['persona_name']
+    st.switch_page(persona['page'])
 
 # FOOTER
 st.markdown("<br><br><br>", unsafe_allow_html=True)

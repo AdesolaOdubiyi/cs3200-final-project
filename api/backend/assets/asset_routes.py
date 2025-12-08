@@ -254,3 +254,152 @@ def get_assets_by_sector(sector_id):
             "status_code": 500
         }), 500
 
+
+@assets.route("/assets", methods=["POST"])
+def create_asset():
+    """Create a new asset."""
+    try:
+        current_app.logger.info("Starting create_asset request")
+        data = request.get_json()
+        required_fields = ["TickerSymbol", "AssetName", "AssetType", "CurrentPrice", "sectorID"]
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    "success": False,
+                    "error": f"Missing required field: {field}",
+                    "status_code": 400
+                }), 400
+
+        cursor = db.get_db().cursor()
+        insert_sql = """
+            INSERT INTO Asset (TickerSymbol, AssetName, AssetType, CurrentPrice, sectorID)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        params = (
+            data["TickerSymbol"],
+            data["AssetName"],
+            data["AssetType"],
+            float(data["CurrentPrice"]),
+            int(data["sectorID"])
+        )
+        current_app.logger.debug(f"Executing query: {insert_sql} with params: {params}")
+        cursor.execute(insert_sql, params)
+        db.get_db().commit()
+        new_id = cursor.lastrowid
+        cursor.close()
+
+        current_app.logger.info(f"Successfully created asset {new_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Asset created successfully",
+                "assetID": new_id
+            }
+        }), 201
+    except Error as e:
+        db.get_db().rollback()
+        current_app.logger.error(f"Database error in create_asset: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500
+
+
+@assets.route("/assets/<int:asset_id>", methods=["PUT"])
+def update_asset(asset_id):
+    """Update an existing asset."""
+    try:
+        current_app.logger.info(f"Starting update_asset request for ID: {asset_id}")
+        data = request.get_json()
+        cursor = db.get_db().cursor()
+
+        cursor.execute("SELECT assetID FROM Asset WHERE assetID = %s", (asset_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({
+                "success": False,
+                "error": "Asset not found",
+                "status_code": 404
+            }), 404
+
+        update_fields = []
+        params = []
+        allowed_fields = ["TickerSymbol", "AssetName", "AssetType", "CurrentPrice", "sectorID"]
+        for field in allowed_fields:
+            if field in data:
+                update_fields.append(f"{field} = %s")
+                if field in ["CurrentPrice"]:
+                    params.append(float(data[field]))
+                elif field in ["sectorID"]:
+                    params.append(int(data[field]))
+                else:
+                    params.append(data[field])
+
+        if not update_fields:
+            cursor.close()
+            return jsonify({
+                "success": False,
+                "error": "No valid fields to update",
+                "status_code": 400
+            }), 400
+
+        params.append(asset_id)
+        update_sql = f"UPDATE Asset SET {', '.join(update_fields)} WHERE assetID = %s"
+        current_app.logger.debug(f"Executing query: {update_sql} with params: {params}")
+        cursor.execute(update_sql, params)
+        db.get_db().commit()
+        cursor.close()
+
+        current_app.logger.info(f"Successfully updated asset {asset_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Asset updated successfully"
+            }
+        }), 200
+    except Error as e:
+        db.get_db().rollback()
+        current_app.logger.error(f"Database error in update_asset: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500
+
+
+@assets.route("/assets/<int:asset_id>", methods=["DELETE"])
+def delete_asset(asset_id):
+    """Delete an asset."""
+    try:
+        current_app.logger.info(f"Starting delete_asset request for ID: {asset_id}")
+        cursor = db.get_db().cursor()
+
+        cursor.execute("SELECT assetID FROM Asset WHERE assetID = %s", (asset_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({
+                "success": False,
+                "error": "Asset not found",
+                "status_code": 404
+            }), 404
+
+        cursor.execute("DELETE FROM Asset WHERE assetID = %s", (asset_id,))
+        db.get_db().commit()
+        cursor.close()
+
+        current_app.logger.info(f"Successfully deleted asset {asset_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Asset deleted successfully"
+            }
+        }), 200
+    except Error as e:
+        db.get_db().rollback()
+        current_app.logger.error(f"Database error in delete_asset: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500

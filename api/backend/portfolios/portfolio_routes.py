@@ -276,3 +276,41 @@ def update_portfolio(portfolio_id):
             "status_code": 500
         }), 500
 
+
+@portfolios.route("/portfolios/<int:portfolio_id>", methods=["DELETE"])
+def delete_portfolio(portfolio_id):
+    """Delete a portfolio and its positions."""
+    try:
+        current_app.logger.info(f"Starting delete_portfolio request for ID: {portfolio_id}")
+        cursor = db.get_db().cursor()
+
+        cursor.execute("SELECT portfolioID FROM Portfolio WHERE portfolioID = %s", (portfolio_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({
+                "success": False,
+                "error": "Portfolio not found",
+                "status_code": 404
+            }), 404
+
+        # Remove dependent positions first
+        cursor.execute("DELETE FROM Position WHERE portfolioID = %s", (portfolio_id,))
+        cursor.execute("DELETE FROM Portfolio WHERE portfolioID = %s", (portfolio_id,))
+        db.get_db().commit()
+        cursor.close()
+
+        current_app.logger.info(f"Successfully deleted portfolio {portfolio_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Portfolio deleted successfully"
+            }
+        }), 200
+    except Error as e:
+        db.get_db().rollback()
+        current_app.logger.error(f"Database error in delete_portfolio: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500

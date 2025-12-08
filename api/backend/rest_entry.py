@@ -13,12 +13,16 @@ from backend.positions.position_routes import positions
 from backend.macro.macro_routes import macro
 from backend.geo.geo_routes import geo
 from backend.backtests.backtest_routes import backtests
-from backend.backtests.backtest_routes import backtests
 from backend.performance.performance_routes import performance
-from backend.ml_models.ml_routes import ml_models
 from backend.ml_models.ml_routes import ml_models
 from backend.director.director_routes import director
 from backend.system.system_routes import system
+from backend.transactions.transaction_routes import transactions
+from backend.scenarios.scenario_routes import scenarios
+from backend.alerts.alert_routes import alerts
+from backend.users.user_routes import users
+from backend.watchlists.watchlist_routes import watchlists
+from backend.audit.audit_routes import audit
 
 def create_app():
     """
@@ -82,12 +86,16 @@ def create_app():
     app.register_blueprint(macro, url_prefix="/macro")
     app.register_blueprint(geo, url_prefix="/geo")
     app.register_blueprint(backtests, url_prefix="/backtest")
-    app.register_blueprint(backtests, url_prefix="/backtest")
     app.register_blueprint(performance, url_prefix="/performance")
-    app.register_blueprint(ml_models, url_prefix="/ml")
     app.register_blueprint(ml_models, url_prefix="/ml")
     app.register_blueprint(director, url_prefix="/director")
     app.register_blueprint(system, url_prefix="/system")
+    app.register_blueprint(transactions, url_prefix="/transaction")
+    app.register_blueprint(scenarios, url_prefix="/scenario")
+    app.register_blueprint(alerts, url_prefix="/alert")
+    app.register_blueprint(users, url_prefix="/user")
+    app.register_blueprint(watchlists, url_prefix="/watchlist")
+    app.register_blueprint(audit, url_prefix="/audit")
 
     # Don't forget to return the app object
     return app

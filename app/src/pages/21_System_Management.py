@@ -158,25 +158,169 @@ with c2:
         st.success("Schema updated to version 004.")
         
     st.markdown('</div>', unsafe_allow_html=True)
-# SYSTEM LOGS
+# USER MANAGEMENT & ALERTS
+st.markdown("---")
+tab1, tab2, tab3 = st.tabs(["User Management", "Alert Configuration", "System Logs"])
 
-st.markdown("### 📜 Recent System Logs")
+with tab1:
+    st.markdown("### 👥 User Management")
+    
+    # Fetch users from API
+    users_data = []
+    api_success = False
+    try:
+        response = requests.get("http://web-api:4000/user/users", timeout=3)
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("success") and result.get("data"):
+                users_data = result.get("data", [])
+                api_success = True
+    except:
+        pass  # Silent fallback to mock data
+    
+    # Fallback to mock users if API fails
+    if not api_success or not users_data:
+        users_data = [
+            {"userID": 1, "name": "Noah Harrison", "email": "noah@stratify.com", "role": "data_analyst", "lastLogin": "2024-01-15T08:30:00Z"},
+            {"userID": 2, "name": "Jonathan Chen", "email": "jonathan@stratify.com", "role": "analyst", "lastLogin": "2024-01-15T09:15:00Z"},
+            {"userID": 3, "name": "Rajesh Singh", "email": "rajesh@stratify.com", "role": "administrator", "lastLogin": "2024-01-15T07:45:00Z"},
+            {"userID": 4, "name": "Sarah Martinez", "email": "sarah@stratify.com", "role": "director", "lastLogin": "2024-01-15T10:00:00Z"}
+        ]
+    
+    if users_data:
+        df_users = pd.DataFrame(users_data)
+        st.dataframe(
+            df_users,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "userID": "ID",
+                "name": "Name",
+                "email": "Email",
+                "role": "Role",
+                "lastLogin": "Last Login"
+            }
+        )
+        
+        # Role update section
+        st.markdown("#### Update User Role")
+        user_ids = [f"{u.get('userID')} - {u.get('name', 'Unknown')}" for u in users_data]
+        selected_user = st.selectbox("Select User", user_ids)
+        new_role = st.selectbox("New Role", ["analyst", "data_analyst", "administrator", "director"])
+        
+        if st.button("Update Role"):
+            try:
+                user_id = int(selected_user.split(" - ")[0])
+                response = requests.put(
+                    f"http://web-api:4000/user/users/{user_id}/role",
+                    json={"role": new_role},
+                    timeout=5
+                )
+                if response.status_code == 200:
+                    result = response.json()
+                    if result.get("success"):
+                        st.success(f"Role updated successfully!")
+                        st.rerun()
+                    else:
+                        st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Role may not be saved.")
+                else:
+                    st.warning("API request failed. Role may not be saved.")
+            except Exception as e:
+                st.warning(f"Could not connect to API: {str(e)}. Role may not be saved.")
+    else:
+        st.info("No users found.")
 
-if logs_data:
-    df_logs = pd.DataFrame(logs_data)
-    st.dataframe(
-        df_logs,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "timestamp": "Time",
-            "level": "Level",
-            "source": "Source",
-            "message": "Message"
-        }
-    )
-else:
-    st.info("No logs available.")
+with tab2:
+    st.markdown("### 🔔 Alert Configuration")
+    
+    # Fetch alerts from API
+    alerts_data = []
+    api_success = False
+    try:
+        response = requests.get("http://web-api:4000/alert/alerts", timeout=3)
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("success") and result.get("data"):
+                alerts_data = result.get("data", [])
+                api_success = True
+    except:
+        pass  # Silent fallback to mock data
+    
+    # Fallback to mock alerts if API fails
+    if not api_success or not alerts_data:
+        alerts_data = [
+            {"alertID": 1, "type": "PRICE_THRESHOLD", "severity": "HIGH", "message": "AAPL dropped below $150", "timestamp": "2024-01-15T10:30:00Z"},
+            {"alertID": 2, "type": "PORTFOLIO_DRIFT", "severity": "MEDIUM", "message": "Tech sector exposure > 40% (Policy Limit)", "timestamp": "2024-01-15T09:15:00Z"},
+            {"alertID": 3, "type": "VOLUME_SPIKE", "severity": "LOW", "message": "Unusual volume detected for MSFT", "timestamp": "2024-01-15T08:45:00Z"}
+        ]
+    
+    if alerts_data:
+        df_alerts = pd.DataFrame(alerts_data)
+        st.dataframe(
+            df_alerts,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "alertID": "ID",
+                "type": "Type",
+                "severity": "Severity",
+                "message": "Message",
+                "timestamp": "Timestamp"
+            }
+        )
+    else:
+        st.info("No active alerts.")
+    
+    # Create new alert rule
+    st.markdown("#### Create Alert Rule")
+    with st.form("create_alert"):
+        alert_name = st.text_input("Alert Name", placeholder="e.g. Price Drop Alert")
+        alert_type = st.selectbox("Alert Type", ["PRICE_THRESHOLD", "VOLUME_SPIKE", "PORTFOLIO_DRIFT"])
+        severity = st.selectbox("Severity", ["LOW", "MEDIUM", "HIGH", "CRITICAL"])
+        portfolio_id = st.number_input("Portfolio ID", min_value=1, value=1)
+        
+        if st.form_submit_button("Create Alert Rule"):
+            try:
+                payload = {
+                    "name": alert_name,
+                    "type": alert_type,
+                    "condition": {
+                        "portfolioID": portfolio_id
+                    },
+                    "severity": severity,
+                    "portfolioID": portfolio_id
+                }
+                response = requests.post("http://web-api:4000/alert/alerts", json=payload, timeout=5)
+                if response.status_code == 201:
+                    result = response.json()
+                    if result.get("success"):
+                        st.success("Alert rule created successfully!")
+                        st.rerun()
+                    else:
+                        st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Alert may not be saved.")
+                else:
+                    st.warning("API request failed. Alert may not be saved.")
+            except Exception as e:
+                st.warning(f"Could not connect to API: {str(e)}. Alert may not be saved.")
+
+with tab3:
+    st.markdown("### 📜 Recent System Logs")
+
+    if logs_data:
+        df_logs = pd.DataFrame(logs_data)
+        st.dataframe(
+            df_logs,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "timestamp": "Time",
+                "level": "Level",
+                "source": "Source",
+                "message": "Message"
+            }
+        )
+    else:
+        st.info("No logs available.")
 # FOOTER
 
 st.markdown("<br><br>", unsafe_allow_html=True)

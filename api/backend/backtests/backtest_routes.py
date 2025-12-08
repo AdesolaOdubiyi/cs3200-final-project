@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import logging
 import random
 from datetime import datetime, timedelta
@@ -42,3 +42,96 @@ def get_backtest_results(backtest_id):
         ]
     }
     return jsonify(data), 200
+
+
+@backtests.route('/backtests', methods=['GET'])
+def list_backtests():
+    """List backtests (placeholder)."""
+    try:
+        current_app.logger.info("Starting list_backtests request")
+        data = [
+            {"backtestID": 1, "name": "Momentum Alpha v2", "status": "COMPLETED"},
+            {"backtestID": 2, "name": "Value Tilt", "status": "PENDING"}
+        ]
+        return jsonify({"success": True, "data": data}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error in list_backtests: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500
+
+
+@backtests.route('/backtests', methods=['POST'])
+def create_backtest():
+    """Create a backtest (skeleton)."""
+    try:
+        current_app.logger.info("Starting create_backtest request")
+        payload = request.get_json() or {}
+        name = payload.get("name")
+        if not name:
+            return jsonify({
+                "success": False,
+                "error": "Missing required field: name",
+                "status_code": 400
+            }), 400
+
+        response = {
+            "message": "Backtest created successfully",
+            "backtestID": 999,
+            "status": "PENDING",
+            "note": "TODO: persist backtest configuration"
+        }
+        return jsonify({"success": True, "data": response}), 201
+    except Exception as e:
+        current_app.logger.error(f"Error in create_backtest: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500
+
+
+@backtests.route('/backtests/<backtest_id>', methods=['PUT'])
+def update_backtest(backtest_id):
+    """Update a backtest (skeleton)."""
+    try:
+        current_app.logger.info(f"Starting update_backtest for ID: {backtest_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Backtest update accepted",
+                "backtestID": backtest_id,
+                "note": "TODO: implement persistence"
+            }
+        }), 200
+    except Exception as e:
+        current_app.logger.error(f"Error in update_backtest: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500
+
+
+@backtests.route('/backtests/<backtest_id>', methods=['DELETE'])
+def delete_backtest(backtest_id):
+    """Delete a backtest (skeleton)."""
+    try:
+        current_app.logger.info(f"Starting delete_backtest for ID: {backtest_id}")
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Backtest deleted",
+                "backtestID": backtest_id,
+                "note": "TODO: remove stored results"
+            }
+        }), 200
+    except Exception as e:
+        current_app.logger.error(f"Error in delete_backtest: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "status_code": 500
+        }), 500

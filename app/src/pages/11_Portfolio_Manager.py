@@ -5,11 +5,13 @@
 import sys
 import streamlit as st
 import pandas as pd
+import requests
 from datetime import datetime
 
 sys.path.append("..")
 from modules.nav import SideBarLinks
 from stratify_theme import apply_stratify_theme
+from stratify_loader import show_stratify_loader
 
 apply_stratify_theme()
 SideBarLinks()
@@ -93,15 +95,53 @@ with tab1:
     with col1:
         st.markdown("### 📈 Current Holdings")
         
-        # Mock Data
-        data = {
-            "Symbol": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN"],
-            "Position": [1500, 800, 400, 600, 1200],
-            "Avg Price": [175.50, 320.10, 450.00, 135.20, 145.80],
-            "Market Value": ["$263,250", "$256,080", "$180,000", "$81,120", "$174,960"],
-            "Unrealized P/L": ["+12.5%", "+8.2%", "+24.1%", "-2.3%", "+5.6%"]
-        }
-        df = pd.DataFrame(data)
+        # Fetch portfolios from API
+        portfolios_data = []
+        try:
+            response = requests.get("http://web-api:4000/portfolio/portfolios")
+            if response.status_code == 200:
+                result = response.json()
+                if result.get("success"):
+                    portfolios_data = result.get("data", [])
+        except:
+            st.warning("Could not fetch portfolios from API. Using placeholder data.")
+        
+        # Fetch positions from API
+        positions_data = []
+        api_success = False
+        try:
+            response = requests.get("http://web-api:4000/position/positions", timeout=3)
+            if response.status_code == 200:
+                result = response.json()
+                if result.get("success") and result.get("data"):
+                    positions_data = result.get("data", [])
+                    api_success = True
+        except:
+            pass  # Silent fallback to mock data
+        
+        # Display positions - use API data if available, otherwise mock data
+        if api_success and positions_data:
+            df_data = []
+            for pos in positions_data:
+                market_value = pos.get("Quantity", 0) * pos.get("CurrentPrice", 0)
+                df_data.append({
+                    "Symbol": pos.get("TickerSymbol", "N/A"),
+                    "Position": pos.get("Quantity", 0),
+                    "Avg Price": f"${pos.get('AvgCostBasis', 0):.2f}",
+                    "Market Value": f"${market_value:,.2f}",
+                    "Unrealized P/L": "N/A"
+                })
+            df = pd.DataFrame(df_data)
+        else:
+            # Fallback mock data - always show something
+            data = {
+                "Symbol": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN"],
+                "Position": [1500, 800, 400, 600, 1200],
+                "Avg Price": ["$175.50", "$320.10", "$450.00", "$135.20", "$145.80"],
+                "Market Value": ["$263,250", "$256,080", "$180,000", "$81,120", "$174,960"],
+                "Unrealized P/L": ["+12.5%", "+8.2%", "+24.1%", "-2.3%", "+5.6%"]
+            }
+            df = pd.DataFrame(data)
         
         st.dataframe(
             df,
@@ -172,36 +212,95 @@ with tab2:
             if not ticker:
                 st.error("Please enter a ticker symbol.")
             else:
-                show_stratify_loader(duration=2, message="Routing Order...", style="sequential")
-                st.success(f"✅ Order Executed: {side} {quantity} {ticker} @ {order_type}")
+                try:
+                    show_stratify_loader(duration=2, message="Routing Order...", style="sequential")
+                    # Get asset ID from ticker (simplified - in real app, lookup first)
+                    # For MVP, using placeholder assetID
+                    transaction_type = "BUY" if side == "Buy" else "SELL"
+                    price = price if order_type in ["Limit", "Stop"] else 0
+                    
+                    payload = {
+                        "portfolioID": 1,  # In real app, get from selected portfolio
+                        "assetID": 1,  # In real app, lookup by ticker
+                        "transactionType": transaction_type,
+                        "quantity": quantity,
+                        "price": float(price) if price else 0,
+                        "transactionDate": datetime.now().strftime("%Y-%m-%d"),
+                        "notes": f"{order_type} order"
+                    }
+                    response = requests.post("http://web-api:4000/transaction/transactions", json=payload, timeout=5)
+                    if response.status_code == 201:
+                        result = response.json()
+                        if result.get("success"):
+                            st.success(f"✅ Order Executed: {side} {quantity} {ticker} @ {order_type}")
+                            st.rerun()
+                        else:
+                            st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Order may not be saved.")
+                    else:
+                        st.warning("API request failed. Order may not be saved, but you can continue using the app.")
+                except Exception as e:
+                    st.warning(f"Could not connect to API: {str(e)}. Order may not be saved, but you can continue using the app.")
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with c2:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("#### Recent Activity")
-        st.markdown(
-            """
-            <div style="font-size:0.9rem;">
+        
+        # Fetch recent transactions from API
+        transactions_data = []
+        api_success = False
+        try:
+            response = requests.get("http://web-api:4000/transaction/transactions", timeout=3)
+            if response.status_code == 200:
+                result = response.json()
+                if result.get("success") and result.get("data"):
+                    transactions_data = result.get("data", [])[:5]  # Get last 5
+                    api_success = True
+        except:
+            pass  # Silent fallback to mock data
+        
+        # Display transactions - use API data if available, otherwise mock data
+        if api_success and transactions_data:
+            html_content = '<div style="font-size:0.9rem;">'
+            for txn in transactions_data:
+                color = "#22c55e" if txn.get("transactionType") == "BUY" else "#ef4444"
+                side = "BUY" if txn.get("transactionType") == "BUY" else "SELL"
+                price = f"${txn.get('price', 0):.2f}" if txn.get('price') else "MKT"
+                date = txn.get("transactionDate", "N/A")
+                html_content += f"""
                 <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                    <span style="color:#22c55e;">BUY AAPL</span>
-                    <span style="color:#94a3b8;">100 @ MKT</span>
-                    <span style="color:#64748b;">10:30 AM</span>
+                    <span style="color:{color};">{side}</span>
+                    <span style="color:#94a3b8;">{txn.get('quantity', 0)} @ {price}</span>
+                    <span style="color:#64748b;">{date}</span>
                 </div>
-                <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                    <span style="color:#ef4444;">SELL NFLX</span>
-                    <span style="color:#94a3b8;">50 @ 420.50</span>
-                    <span style="color:#64748b;">09:45 AM</span>
+                """
+            html_content += '</div>'
+            st.markdown(html_content, unsafe_allow_html=True)
+        else:
+            # Fallback mock data - always show something
+            st.markdown(
+                """
+                <div style="font-size:0.9rem;">
+                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
+                        <span style="color:#22c55e;">BUY AAPL</span>
+                        <span style="color:#94a3b8;">100 @ MKT</span>
+                        <span style="color:#64748b;">10:30 AM</span>
+                    </div>
+                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
+                        <span style="color:#ef4444;">SELL NFLX</span>
+                        <span style="color:#94a3b8;">50 @ 420.50</span>
+                        <span style="color:#64748b;">09:45 AM</span>
+                    </div>
+                    <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
+                        <span style="color:#22c55e;">BUY MSFT</span>
+                        <span style="color:#94a3b8;">200 @ MKT</span>
+                        <span style="color:#64748b;">Yesterday</span>
+                    </div>
                 </div>
-                <div style="padding:0.5rem 0; border-bottom:1px solid #334155; display:flex; justify-content:space-between;">
-                    <span style="color:#22c55e;">BUY MSFT</span>
-                    <span style="color:#94a3b8;">200 @ MKT</span>
-                    <span style="color:#64748b;">Yesterday</span>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                """,
+                unsafe_allow_html=True
+            )
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- TAB 3: CREATE NEW MODEL ---
@@ -220,8 +319,26 @@ with tab3:
         submitted = st.form_submit_button("Create Portfolio")
         if submitted:
             if p_name:
-                show_stratify_loader(duration=1.5, message="Creating Portfolio...")
-                st.success(f"✅ Portfolio '{p_name}' created successfully!")
+                try:
+                    show_stratify_loader(duration=1.5, message="Creating Portfolio...")
+                    # Use default userID 1 for MVP (in real app, get from session)
+                    payload = {
+                        "Name": p_name,
+                        "Description": p_desc or "",
+                        "userID": 1
+                    }
+                    response = requests.post("http://web-api:4000/portfolio/portfolios", json=payload, timeout=5)
+                    if response.status_code == 201:
+                        result = response.json()
+                        if result.get("success"):
+                            st.success(f"✅ Portfolio '{p_name}' created successfully!")
+                            st.rerun()
+                        else:
+                            st.warning(f"API returned error: {result.get('error', 'Unknown error')}. Portfolio may not be saved.")
+                    else:
+                        st.warning("API request failed. Portfolio may not be saved, but you can continue using the app.")
+                except Exception as e:
+                    st.warning(f"Could not connect to API: {str(e)}. Portfolio may not be saved, but you can continue using the app.")
             else:
                 st.error("Please enter a portfolio name.")
 # FOOTER
