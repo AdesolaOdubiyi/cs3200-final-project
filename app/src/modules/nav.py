@@ -19,17 +19,20 @@ def SideBarLinks(show_home=False):
 
     # Dashboards
     st.sidebar.markdown("### Dashboards")
-    st.sidebar.page_link("pages/10_Analyst_Home.py", label="Analyst Workspace")
+    st.sidebar.page_link("pages/10_Analyst_Home.py", label="Analyst Dashboard")
+    st.sidebar.page_link("pages/10_USAID_Worker_Home.py", label="ESG & Impact")
     st.sidebar.page_link("pages/00_Data_Analyst_Home.py", label="Data Analyst Workspace")
+    st.sidebar.page_link("pages/03_Geopolitical_Intel_Home.py", label="Geopolitical Intelligence")
     st.sidebar.page_link("pages/30_Director_Home.py", label="Director Overview")
     st.sidebar.page_link("pages/02_Risk_Dashboard.py", label="Risk Intelligence")
-    st.sidebar.page_link("pages/01_Backtest_Dashboard.py", label="Backtest Engine")
+    st.sidebar.page_link("pages/01_Backtest_Dashboard.py", label="Backtest Dashboard")
+    st.sidebar.page_link("pages/11_Portfolio_Manager.py", label="Portfolio Manager")
 
     # Analytics & Tools
     st.sidebar.markdown("### Analytics & Tools")
     st.sidebar.page_link("pages/11_Prediction.py", label="AI Forecasting")
     st.sidebar.page_link("pages/21_ML_Model_Mgmt.py", label="ML Model Registry")
-    st.sidebar.page_link("pages/01_World_Bank_Viz.py", label="Global Macro Data")
+    st.sidebar.page_link("pages/01_Global_Macro_Data.py", label="Global Macro Data")
     st.sidebar.page_link("pages/02_Map_Demo.py", label="Geospatial Analytics")
     st.sidebar.page_link("pages/13_Classification.py", label="Asset Classification")
 
