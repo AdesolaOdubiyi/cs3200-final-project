@@ -63,7 +63,7 @@ try:
     if response.status_code == 200:
         data = response.json()
     else:
-        st.error("Failed to fetch backtest data.")
+        st.error("Failed to fetch backtest data.Try again")
         data = None
 except:
     st.error("Backend connection failed. Using mock data.")
