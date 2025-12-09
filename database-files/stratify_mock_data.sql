@@ -32,6 +32,14 @@ INSERT INTO User (Name, Email, Role) VALUES
 ('Arden Surname28', 'arden.surname28@stratify.com', 'Data Analyst'),
 ('Micah Surname29', 'micah.surname29@stratify.com', 'Asset Management Analyst'),
 ('Dakota Surname30', 'dakota.surname30@stratify.com', 'Systems Administrator');
+('Phoenix Surname31', 'phoenix.surname31@stratify.com', 'Data Analyst'),
+('River Surname32', 'river.surname32@stratify.com', 'Quantitative Researcher'),
+('Sage Surname33', 'sage.surname33@stratify.com', 'Portfolio Manager'),
+('Indigo Surname34', 'indigo.surname34@stratify.com', 'Risk Analyst'),
+('Skylar Surname35', 'skylar.surname35@stratify.com', 'Trading Operations Specialist');
+
+
+
 
 
 INSERT INTO Sector (sectorName, sectorDescription) VALUES
@@ -202,6 +210,18 @@ INSERT INTO Asset (TickerSymbol, AssetName, AssetType, CurrentPrice, sectorID) V
 ('BP', 'BP plc', 'Stock', 533.14, 3),
 ('TOT', 'TotalEnergies SE', 'Stock', 495.06, 1),
 ('ENB', 'Enbridge Inc.', 'Stock', 476.05, 2);
+('TSLA', 'Tesla Inc.', 'Stock', 245.67, 4),
+('V', 'Visa Inc.', 'Stock', 287.34, 2),
+('MA', 'Mastercard Inc.', 'Stock', 412.89, 2),
+('PYPL', 'PayPal Holdings Inc.', 'Stock', 67.45, 3),
+('SQ', 'Block Inc.', 'Stock', 78.92, 3),
+('SHOP', 'Shopify Inc.', 'Stock', 89.23, 5),
+('SPOT', 'Spotify Technology SA', 'Stock', 234.56, 4),
+('UBER', 'Uber Technologies Inc.', 'Stock', 71.23, 3),
+('LYFT', 'Lyft Inc.', 'Stock', 14.78, 3),
+('ZM', 'Zoom Video Communications Inc.', 'Stock', 67.89, 5);
+
+
 
 
 INSERT INTO Portfolio (Name, Description, dateCreated, userID) VALUES
@@ -456,6 +476,20 @@ INSERT INTO PriceHistory (Date, openPrice, closePrice, Volume, assetID) VALUES
 ('2024-01-30 09:30:00', 349.09, 350.42, 5538034, 34),
 ('2024-01-01 09:30:00', 261.01, 267.33, 39112167, 1),
 ('2024-03-01 09:30:00', 86.56, 88.19, 68157088, 39);
+('2024-07-01 09:30:00', 243.50, 246.80, 42567890, 41),
+('2024-07-01 09:30:00', 285.20, 288.10, 18234567, 42),
+('2024-07-01 09:30:00', 408.75, 413.25, 9876543, 43),
+('2024-07-01 09:30:00', 66.80, 67.95, 28765432, 44),
+('2024-07-01 09:30:00', 77.25, 78.60, 15432198, 45),
+('2024-07-02 09:30:00', 88.90, 89.75, 12345678, 46),
+('2024-07-02 09:30:00', 232.40, 234.90, 8765432, 47),
+('2024-07-02 09:30:00', 70.50, 71.80, 19876543, 48),
+('2024-07-02 09:30:00', 14.60, 15.10, 35678901, 49),
+('2024-07-02 09:30:00', 66.75, 68.20, 11234567, 50);
+
+
+
+
 
 
 INSERT INTO Alert (triggerTime, Message, Status, alertRuleID, portfolioID) VALUES
